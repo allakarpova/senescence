@@ -220,6 +220,7 @@ cat ('Reading in objects\n')
 obj <- foreach (s=samples.id, p = paths, pid = samples$`Patient ID`, dt = samples$`Data type`, a = samples$Age, tis = samples$Tissue, .combine=c) %dopar% {
   print(s)
   obj=readRDS(p) 
+  print(paste('opened', s))
   if (dt.tofilter == 'Combo RNA') {
     DefaultAssay(obj) <- assay.towork
     if (!file.exists(Fragments(obj)[[1]]@path)) stop("Urgh, this sample object can't locate fragments file")
