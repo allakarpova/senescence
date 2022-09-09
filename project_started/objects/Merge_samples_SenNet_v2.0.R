@@ -241,6 +241,9 @@ stopImplicitCluster()
 
 
 if (dt.tofilter == 'Combo RNA') {
+  if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filename,".rds"))) {
+    
+  
   cat('doing normalization of combo object\n')
   dir.create('peaks')
 
@@ -290,9 +293,11 @@ if (dt.tofilter == 'Combo RNA') {
   
   combined <- merge(x = obj[[1]], y = obj[-1], add.cell.ids = samples.id)  
   combined <- AddMetaData(combined, my.metadata)
-  combined <- subset(combined, TSS.enrichment >= 4) # should remove crappy aatc cells that form a cloud on the UMAP
+  combined <- subset(combined, TSS.enrichment >= 4) # should remove crappy atac cells that form a cloud on the UMAP
   saveRDS(combined,  paste0(length(samples.id),"_Merged_not_normalized_",add_filename,".rds"))
-  
+  } else {
+    combined <- readRDS(paste0(length(samples.id),"_Merged_not_normalized_",add_filename,".rds"))
+  }
   
   # add metadata
   ifelse('passed_filters' %in% colnames(combined@meta.data),
