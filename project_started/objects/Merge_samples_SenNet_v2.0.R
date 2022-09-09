@@ -213,88 +213,90 @@ my.metadata <- fread(meta.path, data.table = F) %>%
   data.frame(row.names = 1, check.rows = F, check.names = F) %>%
   dplyr::select(-seurat_clusters)
 
-# make the list of objects
-registerDoParallel(cores=10)
-cat ('Reading in objects\n')
-
-obj <- foreach (s=samples.id, p = paths, pid = samples$`Patient ID`, dt = samples$`Data type`, a = samples$Age, tis = samples$Tissue, .combine=c) %dopar% {
-  print(s)
-  obj=readRDS(p) 
-  print(paste('opened', s))
-  if (dt.tofilter == 'Combo RNA') {
-    DefaultAssay(obj) <- assay.towork
-    if (!file.exists(Fragments(obj)[[1]]@path)) stop("Urgh, this sample object can't locate fragments file")
-    obj <- DietSeurat(obj, assays = c(assay.towork, 'RNA'))
-  } else {
-    DefaultAssay(obj) <- 'RNA'
-    obj <- DietSeurat(obj, assays = 'RNA')
-  }
+if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filename,".rds"))) {
+    
+  # make the list of objects
+  registerDoParallel(cores=10)
+  cat ('Reading in objects\n')
   
-  obj$Sample = s
-  obj$Patient_ID = pid
-  obj$Data_type = dt
-  obj$Age = as.numeric(a)
-  obj$Tissue = tis
-  return(obj)
+  obj <- foreach (s=samples.id, p = paths, pid = samples$`Patient ID`, dt = samples$`Data type`, a = samples$Age, tis = samples$Tissue, .combine=c) %dopar% {
+    print(s)
+    obj=readRDS(p) 
+    print(paste('opened', s))
+    if (dt.tofilter == 'Combo RNA') {
+      DefaultAssay(obj) <- assay.towork
+      if (!file.exists(Fragments(obj)[[1]]@path)) stop("Urgh, this sample object can't locate fragments file")
+      obj <- DietSeurat(obj, assays = c(assay.towork, 'RNA'))
+    } else {
+      DefaultAssay(obj) <- 'RNA'
+      obj <- DietSeurat(obj, assays = 'RNA')
+    }
+    
+    obj$Sample = s
+    obj$Patient_ID = pid
+    obj$Data_type = dt
+    obj$Age = as.numeric(a)
+    obj$Tissue = tis
+    return(obj)
+  }
+  stopImplicitCluster()
 }
-stopImplicitCluster()
-
 
 if (dt.tofilter == 'Combo RNA') {
   if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filename,".rds"))) {
     
-  
-  cat('doing normalization of combo object\n')
-  dir.create('peaks')
-
-  ############# create a common set peak
-  ###########################################
-  # load peaks
-  registerDoParallel(cores=10)
-  all_peaks <- foreach (s=samples.id,  p = paths) %dopar% {
-    load_peaks (sample = s, input.path.f = input.path)
-  }
-  stopImplicitCluster()
-  
-  all_peaks <- rbindlist(all_peaks) # peaks from all samples
-  all_peaks <- all_peaks[order(score.norm, decreasing = T), ] # order peaks by normalized scores, this is essential for filtering out overlapping peaks
-  fwrite(all_peaks, paste0('peaks/',length(samples.id),"_sample_MACS2_peaks_",add_filename,".tsv"),
-         sep='\t',row.names=FALSE)
-  
-  recentered_final <- iterative_removal(all_peaks)
-  fwrite(recentered_final, paste0('peaks/',length(samples.id),'_recentered_final.',add_filename,'.tsv'),sep='\t',
-         row.names=FALSE)
-  recentered_p=StringToGRanges(unique(recentered_final$new_peak), sep = c("-", "-"))
-  
-  ###
-  plan("multicore", workers = 20)
-  options(future.globals.maxSize = 250 * 1024^3) # for 250 Gb RAM
-  
-  peak.number <- length(unique(recentered_final$new_peak))
-  n.peaks <- round(peak.number/20)
-  
-  matrix.counts <- map (obj, ~getFeatureMatrix(.x, recentered_p, n.peaks, assay.towork))
-  
-  registerDoParallel(cores=10)
-  cat ('creating assays on common peaks\n')
-  obj <- foreach (obj = obj, co = matrix.counts, .combine=c) %dopar% {
-    DefaultAssay(obj) <- 'RNA'
-    frag = Fragments(obj[[assay.towork]])
-    obj[[assay.towork]] <- NULL
-    obj[['ATAC_merged']] <- CreateChromatinAssay(counts = co,
-                                                 fragments=frag, 
-                                                 min.cells = -1, 
-                                                 min.features = -1)
     
-    return(obj)
-  }
-  stopImplicitCluster()
+    cat('doing normalization of combo object\n')
+    dir.create('peaks')
   
-  
-  combined <- merge(x = obj[[1]], y = obj[-1], add.cell.ids = samples.id)  
-  combined <- AddMetaData(combined, my.metadata)
-  combined <- subset(combined, TSS.enrichment >= 4) # should remove crappy atac cells that form a cloud on the UMAP
-  saveRDS(combined,  paste0(length(samples.id),"_Merged_not_normalized_",add_filename,".rds"))
+    ############# create a common set peak
+    ###########################################
+    # load peaks
+    registerDoParallel(cores=10)
+    all_peaks <- foreach (s=samples.id,  p = paths) %dopar% {
+      load_peaks (sample = s, input.path.f = input.path)
+    }
+    stopImplicitCluster()
+    
+    all_peaks <- rbindlist(all_peaks) # peaks from all samples
+    all_peaks <- all_peaks[order(score.norm, decreasing = T), ] # order peaks by normalized scores, this is essential for filtering out overlapping peaks
+    fwrite(all_peaks, paste0('peaks/',length(samples.id),"_sample_MACS2_peaks_",add_filename,".tsv"),
+           sep='\t',row.names=FALSE)
+    
+    recentered_final <- iterative_removal(all_peaks)
+    fwrite(recentered_final, paste0('peaks/',length(samples.id),'_recentered_final.',add_filename,'.tsv'),sep='\t',
+           row.names=FALSE)
+    recentered_p=StringToGRanges(unique(recentered_final$new_peak), sep = c("-", "-"))
+    
+    ###
+    plan("multicore", workers = 20)
+    options(future.globals.maxSize = 250 * 1024^3) # for 250 Gb RAM
+    
+    peak.number <- length(unique(recentered_final$new_peak))
+    n.peaks <- round(peak.number/20)
+    
+    matrix.counts <- map (obj, ~getFeatureMatrix(.x, recentered_p, n.peaks, assay.towork))
+    
+    registerDoParallel(cores=10)
+    cat ('creating assays on common peaks\n')
+    obj <- foreach (obj = obj, co = matrix.counts, .combine=c) %dopar% {
+      DefaultAssay(obj) <- 'RNA'
+      frag = Fragments(obj[[assay.towork]])
+      obj[[assay.towork]] <- NULL
+      obj[['ATAC_merged']] <- CreateChromatinAssay(counts = co,
+                                                   fragments=frag, 
+                                                   min.cells = -1, 
+                                                   min.features = -1)
+      
+      return(obj)
+    }
+    stopImplicitCluster()
+    
+    
+    combined <- merge(x = obj[[1]], y = obj[-1], add.cell.ids = samples.id)  
+    combined <- AddMetaData(combined, my.metadata)
+    combined <- subset(combined, TSS.enrichment >= 4) # should remove crappy atac cells that form a cloud on the UMAP
+    saveRDS(combined,  paste0(length(samples.id),"_Merged_not_normalized_",add_filename,".rds"))
   } else {
     combined <- readRDS(paste0(length(samples.id),"_Merged_not_normalized_",add_filename,".rds"))
   }
