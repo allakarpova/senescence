@@ -57,7 +57,7 @@ Run_AUCell <- function(obj, geneset.list, name) {
 Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr') {
   print(s)
   #s = 'Fibroblast_replicative_sen'
-  genes.in.signature <- subset(signatures, ont == s)$Gene_names
+  genes.in.signature <- subset(all.signatures, ont == s)$Gene_names
   # #get genes with good coverage
   # counts <- GetAssayData(object = panc, slot = "counts")
   # keep_genes <- filter_counts(counts, cell.pct = cell.pct.cutoff)
