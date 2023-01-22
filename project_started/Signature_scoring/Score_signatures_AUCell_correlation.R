@@ -70,7 +70,8 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
   fc.sign <- subset(all.signatures, ont == s)
   rownames(fc.sign) <- fc.sign$Gene_names
   fc.sign <- fc.sign[genes.in.signature,]
-  #dim(fc.sign)
+  print(dim(fc.sign))
+  print(dim(expr.mat))
   if(dim(expr.mat)[1] != dim(fc.sign)[1]) {
     fc.sign <- subset(fc.sign, Gene_names %in% rownames(expr.mat))
     stopifnot(fc.sign$Gene_names== rownames(expr.mat))
