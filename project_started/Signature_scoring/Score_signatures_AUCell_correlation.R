@@ -154,14 +154,14 @@ cat('doing one way scoring')
 message('do CP genes')
 c2_gene_sets = msigdbr(species = "human", category="C2")
 
-msig_df <- c2_gene_sets %>% dplyr::filter(grepl('SENES|senesce|Senesce|SASP', gs_name)) %>% 
+msig_df <- c2_gene_sets %>% dplyr::filter(grepl('SENESCE|senesce|Senesce|SASP', gs_name)) %>% 
   dplyr::distinct(gs_name, gene_symbol) %>% 
   as.data.frame()
 geneSets.msig <- split(msig_df$gene_symbol, msig_df$gs_name)
 
 c5_gene_sets = msigdbr(species = "human", category="C5")
 
-msig_df <- c5_gene_sets %>% dplyr::filter(grepl('SENES|senesce|Senesce|SASP', gs_name)) %>% 
+msig_df <- c5_gene_sets %>% dplyr::filter(grepl('SENESCE|senesce|Senesce|SASP', gs_name)) %>% 
   dplyr::distinct(gs_name, gene_symbol) %>% 
   as.data.frame()
 geneSets.msig2 <- split(msig_df$gene_symbol, msig_df$gs_name)
