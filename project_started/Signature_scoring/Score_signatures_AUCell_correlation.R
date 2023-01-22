@@ -76,12 +76,16 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
     fc.sign <- subset(fc.sign, Gene_names %in% rownames(expr.mat))
     stopifnot(fc.sign$Gene_names== rownames(expr.mat))
   }
-  
+  print(dim(fc.sign))
+  print(dim(expr.mat))
   cor.result <- psych::corr.test(expr.mat, fc.sign$log2FC, method = 'spearman', adjust = cor.adjust.method)
-  df <- cbind('rho' = cor.result$r , 'p.val' = cor.result$p) %>% data.frame(check.rows = F, check.names = F)
-  colnames(df) <- c('rho', 'p.val')
+  df <- cbind('rho' = cor.result$r , 
+              'p.val' = cor.result$p,
+              'p.adj' = cor.result$p.adj) %>% 
+    data.frame(check.rows = F, check.names = F)
+  colnames(df) <- c('rho', 'p.val','p.adj')
   
-  toplot <- cbind(Embeddings(obj, reduction = 'umap'), df)
+  toplot <- cbind(Embeddings(obj, reduction = 'wnn.umap'), df)
   fwrite(toplot, glue::glue("{ct}_{s}_correlation_Spearman.tsv"), row.names = T, sep='\t')
   
   max.cor <- max(abs(toplot$rho))
