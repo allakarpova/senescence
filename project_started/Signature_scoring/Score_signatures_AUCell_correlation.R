@@ -46,9 +46,8 @@ Run_AUCell <- function(obj, geneset.list, name) {
     dev.off()
     dev.off()
     
-  })
-  
 }
+  
 
 
 Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr') {
