@@ -30,6 +30,7 @@ Run_AUCell <- function(obj, geneset.list, name) {
     
     pdf(glue::glue('{name}_AUCell_histograms.pdf'))
     cells_assignment <- AUCell_exploreThresholds(cells_AUC, plotHist=TRUE, assign=TRUE) 
+    print(cells_assignment)
     dev.off()
     
     saveRDS(cells_assignment, file=glue::glue("{name}_cells_assignment.rds"))
@@ -64,7 +65,7 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
   cat(paste0('Genes from a signature total ', length(genes.in.signature), '\n'))
   #cat(paste0('Genes from a signature with good coverage ', length(genes.in.signature.good.coverage), '\n'))
   #get expression data and scale within each cell
-  expr.mat <- FetchData(panc, vars = genes.in.signature, slot = 'data') %>% t() %>% scale()
+  expr.mat <- FetchData(obj, vars = genes.in.signature, slot = 'data') %>% t() %>% scale()
   #dim(expr.mat)
   fc.sign <- subset(signatures, ont == s)
   rownames(fc.sign) <- fc.sign$Gene_names
@@ -193,7 +194,7 @@ names(geneSets) <- str_replace_all(names(geneSets), '_', '-')
 
 print(names(geneSets))
 
-Run_AUCell(obj, geneSets, name = add_filename)
+#Run_AUCell(obj, geneSets, name = add_filename)
 
 
 
