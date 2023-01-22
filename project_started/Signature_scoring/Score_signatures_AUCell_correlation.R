@@ -89,7 +89,7 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
     theme_cowplot() +
     ggtitle (paste0('Correlation with\n', s)) +
     scale_color_gradient2(name = "Spearman's rho", low = '#1f78b4', mid = 'lightgrey', high = '#e41a1c', limits = c(-max.cor, max.cor))
-  ggsave(paste0(folder, 'Featureplot_', ct, '_cor_', s, '.pdf'), useDingbats = F, width = 5, height = 4.5)
+  ggsave(paste0('Featureplot_', ct, '_cor_', s, '.pdf'), useDingbats = F, width = 5, height = 4.5)
   
   #color dots only if p.value is < 0.05
   ggplot() +
@@ -102,7 +102,7 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
     theme_cowplot() +
     ggtitle (paste0('Correlation with\n', s)) +
     scale_color_gradient2(name = "Spearman's rho", low = '#1f78b4', mid = 'lightgrey', high = '#e41a1c', limits = c(-max.cor, max.cor))
-  ggsave(paste0(folder, 'Featureplot_', ct, '_cor_', s, '_significant_only.pdf'), useDingbats = F, width = 5, height = 4.5)
+  ggsave(paste0( 'Featureplot_', ct, '_cor_', s, '_significant_only.pdf'), useDingbats = F, width = 5, height = 4.5)
   
 }
 
