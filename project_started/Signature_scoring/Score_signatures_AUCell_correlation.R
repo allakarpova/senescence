@@ -208,7 +208,6 @@ print(names(geneSets))
 cat('doing two way scoring')
 
 signatures <- fread('/diskmnt/Projects/SenNet_analysis/Papers/Unmasking_transcriptional_heterogeneity/processed_sen_signatures_Segura_paper.txt', data.table = F)
-signatures
 
 sensig <- fread('/diskmnt/Projects/SenNet_analysis/Papers/SenSig/SkmFibGenes_SenSig_res0.05.ovl_with_cherryetal.csv')
 sensig <- sensig %>% 
