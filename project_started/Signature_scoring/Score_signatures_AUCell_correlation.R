@@ -117,7 +117,7 @@ option_list = list(
               type="character",
               default="./", 
               help="output folder path",
-              metavar="character")
+              metavar="character"),
   make_option(c("-e", "--extra"),
               type="character",
               default="foo",
@@ -211,7 +211,7 @@ all.signatures <- rbind(signatures, sensig)
 
 
 all.signatures$ont %>% unique %>% walk(function(s) {
-  Run_correlation(obj, s, add_filename, dot.size = 0.1, cor.adjust.method = 'fdr')}
+  Run_correlation(obj, s, add_filename, dot.size = 0.1, cor.adjust.method = 'fdr')})
   
   
   
