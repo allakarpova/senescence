@@ -87,6 +87,7 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
   colnames(df) <- c('rho', 'p.val','p.adj')
   
   toplot <- cbind(Embeddings(obj, reduction = 'wnn.umap'), df)
+  colnames(toplot)[1:2] <- c( 'UMAP_1',  'UMAP_2')
   fwrite(toplot, glue::glue("{ct}_{s}_correlation_Spearman.tsv"), row.names = T, sep='\t')
   
   max.cor <- max(abs(toplot$rho))
