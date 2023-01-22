@@ -137,7 +137,7 @@ opt = parse_args(opt_parser)
 
 
 # read in initial arguments
-input.path <- opt$input.folder
+input.path <- opt$input.object
 out_path <- opt$output
 meta.path <- opt$metadata.folder
 add_filename <- opt$extra
