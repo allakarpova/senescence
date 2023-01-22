@@ -67,7 +67,7 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
   #get expression data and scale within each cell
   expr.mat <- FetchData(obj, vars = genes.in.signature, slot = 'data') %>% t() %>% scale()
   #dim(expr.mat)
-  fc.sign <- subset(signatures, ont == s)
+  fc.sign <- subset(all.signatures, ont == s)
   rownames(fc.sign) <- fc.sign$Gene_names
   fc.sign <- fc.sign[genes.in.signature,]
   #dim(fc.sign)
