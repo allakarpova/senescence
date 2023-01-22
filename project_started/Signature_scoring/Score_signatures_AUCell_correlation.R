@@ -158,6 +158,7 @@ obj <- readRDS(input.path)
 meta <- fread(meta.path, header = TRUE) %>%
   data.frame(row.names = 1)
 obj <- AddMetaData(obj, meta)
+DefaultAssay(obj) <- 'RNA'
 
 cat('doing one way scoring')
 message('do CP genes')
