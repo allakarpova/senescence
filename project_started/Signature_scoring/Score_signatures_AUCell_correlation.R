@@ -18,6 +18,7 @@ suppressMessages(library(googlesheets4))
 suppressMessages(library(stringr))
 suppressMessages(library(AUCell))
 library(msigdbr)
+library(cowplot)
 
 Run_AUCell <- function(obj, geneset.list, name) {
   
