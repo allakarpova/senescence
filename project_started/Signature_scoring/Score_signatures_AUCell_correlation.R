@@ -86,7 +86,8 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
     data.frame(check.rows = F, check.names = F)
   colnames(df) <- c('rho', 'p.val','p.adj')
   
-  toplot <- cbind(Embeddings(obj, reduction = 'wnn.umap'), df)
+  toplot <- cbind(Embeddings(obj, reduction = 'wnn.umap'), df) %>%
+    mutate(Signature = s)
   colnames(toplot)[1:2] <- c( 'UMAP_1',  'UMAP_2')
   fwrite(toplot, glue::glue("{ct}_{s}_correlation_Spearman.tsv"), row.names = T, sep='\t')
   
@@ -114,6 +115,7 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
     scale_color_gradient2(name = "Spearman's rho", low = '#1f78b4', mid = 'lightgrey', high = '#e41a1c', limits = c(-max.cor, max.cor))
   ggsave(paste0( 'Featureplot_', ct, '_cor_', s, '_significant_only.pdf'), useDingbats = F, width = 5, height = 4.5)
   
+  return(toplot %>% rowid_to_column(var = 'Barcode'))
 }
 
 ###options###
@@ -221,10 +223,12 @@ sensig <- sensig %>%
 all.signatures <- rbind(signatures, sensig)
 
 
-all.signatures$ont %>% unique %>% walk(function(s) {
-  Run_correlation(obj, s, add_filename, dot.size = 0.1, cor.adjust.method = 'fdr')})
+rho.scores <- all.signatures$ont %>% unique %>% map(function(s) {
+  Run_correlation(obj, s, add_filename, dot.size = 0.1, cor.adjust.method = 'fdr')}) %>%
+  rbindlist()
   
-  
+fwrite(toplot, glue::glue("{add_filename}_all_sign_correlation_Spearman.tsv"), row.names = F, sep='\t')
+
   
 
 
