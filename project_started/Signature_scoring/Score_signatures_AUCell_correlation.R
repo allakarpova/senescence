@@ -139,7 +139,7 @@ opt = parse_args(opt_parser)
 # read in initial arguments
 input.path <- opt$input.object
 out_path <- opt$output
-meta.path <- opt$metadata.folder
+meta.path <- opt$metadata
 add_filename <- opt$extra
 
 dir.create(out_path, showWarnings = F, recursive = TRUE)
