@@ -142,6 +142,7 @@ Run_projectr <- function(obj, s, ct, dot.size = 1) {
   toplot <- cbind(Embeddings(obj, reduction = 'wnn.umap'), projections) %>%
     data.frame() %>%
     mutate(Signature = s)
+  colnames(toplot)[1:2] <- c( 'UMAP_1',  'UMAP_2')
   
   max.cor <- max(abs(toplot[,1]))
   
