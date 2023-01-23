@@ -19,6 +19,7 @@ suppressMessages(library(stringr))
 suppressMessages(library(AUCell))
 library(msigdbr)
 library(cowplot)
+library(projectR)
 
 Run_AUCell <- function(obj, geneset.list, name) {
   
