@@ -67,18 +67,21 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
   #cat(paste0('Genes from a signature with good coverage ', length(genes.in.signature.good.coverage), '\n'))
   #get expression data and scale within each cell
   expr.mat <- FetchData(obj, vars = genes.in.signature, slot = 'data') %>% t() %>% scale()
-  cat('test1')
-  fc.sign <- subset(all.signatures, ont == s) %>%
-    data.frame(row.names='Gene_names')
-  cat('test2')
+  cat('test1\n')
+  fc.sign <- subset(all.signatures, ont == s) 
+  cat('test2\n')
   print(dim(fc.sign))
   print(dim(expr.mat))
   if(dim(expr.mat)[1] != dim(fc.sign)[1]) {
     fc.sign <- subset(fc.sign, Gene_names %in% rownames(expr.mat))
     stopifnot(fc.sign$Gene_names== rownames(expr.mat))
   }
+  fc.sign <- fc.sign %>%
+    data.frame(row.names='Gene_names')
+  
   print(dim(fc.sign))
   print(dim(expr.mat))
+  
   cor.result <- psych::corr.test(expr.mat, fc.sign$log2FC, method = 'spearman', adjust = cor.adjust.method)
   df <- cbind('rho' = cor.result$r , 
               'p.val' = cor.result$p,
@@ -117,6 +120,41 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
   
   return(toplot %>% rowid_to_column(var = 'Barcode'))
 }
+
+
+Run_projectr <- functin(obj, s, ct, dot.size = 1) {
+  #s='SenSig'
+  genes.in.signature <- subset(all.signatures, ont == s)$Gene_names
+  cat(paste0('Genes from a signature total ', length(genes.in.signature), '\n'))
+  
+  expr.mat <- FetchData(obj, vars = genes.in.signature, slot = 'data') %>% t() %>% scale()
+  #dim(expr.mat)
+  fc.sign <- subset(all.signatures, ont == s) %>%
+    data.frame(row.names='Gene_names') %>%
+    select(log2FC)
+  
+  projections <- projectR(expr.mat, as.matrix(fc.sign), dataNames=NULL, loadingsNames=NULL, NP = NULL, full = FALSE) %>%
+    t()
+  colnames(projections) <- s
+  projections
+  
+  toplot <- cbind(Embeddings(obj, reduction = 'wnn.umap'), projections) %>%
+    mutate(Signature = s)
+  
+  max.cor <- max(abs(toplot[,1]))
+  
+  ggplot(data = toplot,  
+         aes_string(x = 'UMAP_1', y = 'UMAP_2', color = s)) +
+    geom_point(
+      size = dot.size) +
+    theme_cowplot() +
+    ggtitle (paste0('Projection on\n', s)) +
+    scale_color_gradient2(name = "Score", low = '#1f78b4', mid = '#d9d9d9', high = '#e41a1c', limits = c(-max.cor, max.cor))
+  ggsave(paste0('Featureplot_', ct, '_projectR_', s, '.pdf'), useDingbats = F, width = 5, height = 4.5)
+  return(projections)
+  
+}
+
 
 ###options###
 ######################
@@ -231,5 +269,5 @@ rho.scores <- all.signatures$ont %>% unique %>% map(function(s) {
 fwrite(rho.scores, glue::glue("{add_filename}_all_sign_correlation_Spearman.tsv"), row.names = F, sep='\t')
 
   
-
+Run_projectr
 
