@@ -122,7 +122,7 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
 }
 
 
-Run_projectr <- functin(obj, s, ct, dot.size = 1) {
+Run_projectr <- function(obj, s, ct, dot.size = 1) {
   #s='SenSig'
   genes.in.signature <- subset(all.signatures, ont == s)$Gene_names
   cat(paste0('Genes from a signature total ', length(genes.in.signature), '\n'))
@@ -139,6 +139,7 @@ Run_projectr <- functin(obj, s, ct, dot.size = 1) {
   projections
   
   toplot <- cbind(Embeddings(obj, reduction = 'wnn.umap'), projections) %>%
+    data.frame() %>%
     mutate(Signature = s)
   
   max.cor <- max(abs(toplot[,1]))
@@ -269,5 +270,9 @@ rho.scores <- all.signatures$ont %>% unique %>% map(function(s) {
 fwrite(rho.scores, glue::glue("{add_filename}_all_sign_correlation_Spearman.tsv"), row.names = F, sep='\t')
 
   
-Run_projectr
+project.scores <- all.signatures$ont %>% unique %>% map(function(s) {
+  Run_projectr(obj, s, add_filename, dot.size = 0.1)})
+project.scores <- do.call('cbind', project.scores)
+
+fwrite(project.scores, glue::glue("{add_filename}_all_sign_projectR.tsv"), row.names = T, sep='\t')
 
