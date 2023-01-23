@@ -263,6 +263,13 @@ sensig <- sensig %>%
 all.signatures <- rbind(sensig,signatures)
 
 
+project.scores <- all.signatures$ont %>% unique %>% map(function(s) {
+  Run_projectr(obj, s, add_filename, dot.size = 0.1)})
+project.scores <- do.call('cbind', project.scores)
+
+fwrite(project.scores, glue::glue("{add_filename}_all_sign_projectR.tsv"), row.names = T, sep='\t')
+
+
 rho.scores <- all.signatures$ont %>% unique %>% map(function(s) {
   Run_correlation(obj, s, add_filename, dot.size = 0.1, cor.adjust.method = 'fdr')}) %>%
   rbindlist()
@@ -270,9 +277,4 @@ rho.scores <- all.signatures$ont %>% unique %>% map(function(s) {
 fwrite(rho.scores, glue::glue("{add_filename}_all_sign_correlation_Spearman.tsv"), row.names = F, sep='\t')
 
   
-project.scores <- all.signatures$ont %>% unique %>% map(function(s) {
-  Run_projectr(obj, s, add_filename, dot.size = 0.1)})
-project.scores <- do.call('cbind', project.scores)
-
-fwrite(project.scores, glue::glue("{add_filename}_all_sign_projectR.tsv"), row.names = T, sep='\t')
 
