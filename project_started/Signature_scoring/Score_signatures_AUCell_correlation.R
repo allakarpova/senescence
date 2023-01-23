@@ -219,7 +219,8 @@ sensig <- sensig %>%
   filter((HGNC.symbol!='')) %>%
   mutate(ont='SenSig') %>%
   rename(Gene_names=HGNC.symbol,
-         log2FC=logFC)
+         log2FC=logFC) %>%
+  filter(!duplicated(Gene_names)) # some genes are duplicated but their FC is comparable
 all.signatures <- rbind(signatures, sensig)
 
 
@@ -227,7 +228,7 @@ rho.scores <- all.signatures$ont %>% unique %>% map(function(s) {
   Run_correlation(obj, s, add_filename, dot.size = 0.1, cor.adjust.method = 'fdr')}) %>%
   rbindlist()
   
-fwrite(toplot, glue::glue("{add_filename}_all_sign_correlation_Spearman.tsv"), row.names = F, sep='\t')
+fwrite(rho.scores, glue::glue("{add_filename}_all_sign_correlation_Spearman.tsv"), row.names = F, sep='\t')
 
   
 
