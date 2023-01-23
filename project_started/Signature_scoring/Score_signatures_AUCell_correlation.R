@@ -221,7 +221,7 @@ sensig <- sensig %>%
   rename(Gene_names=HGNC.symbol,
          log2FC=logFC) %>%
   filter(!duplicated(Gene_names)) # some genes are duplicated but their FC is comparable
-all.signatures <- rbind(signatures, sensig)
+all.signatures <- rbind(sensig,signatures)
 
 
 rho.scores <- all.signatures$ont %>% unique %>% map(function(s) {
