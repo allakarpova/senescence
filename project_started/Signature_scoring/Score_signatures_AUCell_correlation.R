@@ -67,10 +67,10 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
   #cat(paste0('Genes from a signature with good coverage ', length(genes.in.signature.good.coverage), '\n'))
   #get expression data and scale within each cell
   expr.mat <- FetchData(obj, vars = genes.in.signature, slot = 'data') %>% t() %>% scale()
-  #dim(expr.mat)
-  fc.sign <- subset(all.signatures, ont == s)
-  rownames(fc.sign) <- fc.sign$Gene_names
-  fc.sign <- fc.sign[genes.in.signature,]
+  cat('test1')
+  fc.sign <- subset(all.signatures, ont == s) %>%
+    data.frame(row.names='Gene_names')
+  cat('test2')
   print(dim(fc.sign))
   print(dim(expr.mat))
   if(dim(expr.mat)[1] != dim(fc.sign)[1]) {
