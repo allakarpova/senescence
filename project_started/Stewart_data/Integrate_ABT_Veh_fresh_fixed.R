@@ -17,7 +17,7 @@ suppressMessages(library(glue))
 
 
 select <- dplyr::select
-out_path <- '/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/Stewart_ABT_fresh_fixed/'
+out_path <- '/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/Integrated_Stewart_ABT_fresh_fixed/'
 input_path <- '/diskmnt/Projects/SenNet_primary/rds_objects/StewartLab/'
 dir.create(out_path, showWarnings = F, recursive = T)
 setwd(out_path)
