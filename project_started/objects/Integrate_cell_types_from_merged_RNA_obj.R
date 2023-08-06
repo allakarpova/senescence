@@ -114,7 +114,7 @@ all.rna.list <- lapply(X = all.rna.list, FUN = RunPCA, features = features)
 
 rna.anchors <- FindIntegrationAnchors(object.list = all.rna.list, normalization.method = "SCT",
                                       anchor.features = features, dims = 1:30, reduction = "rpca", k.anchor = 20)
-int <- IntegrateData(anchorset = rna.anchors, normalization.method = "SCT", dims = 1:30)
+int <- IntegrateData(anchorset = rna.anchors, normalization.method = "SCT", dims = 1:30, k.weight=70)
 int <- RunPCA(int, verbose = FALSE)
 int <- RunUMAP(int, reduction = "pca", dims = 1:30)
 int <- FindNeighbors(int, reduction = "pca", dims = 1:30)
