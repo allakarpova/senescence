@@ -91,7 +91,7 @@ print(ct)
 print(dim(int.sub))
 
 cell.patient.count <- int.sub@meta.data %>% group_by(Patient_ID) %>% tally()
-invalid.patient.id <- cell.patient.count %>% filter(n<30) %>% pull(Patient_ID)
+invalid.patient.id <- cell.patient.count %>% filter(n<50) %>% pull(Patient_ID)
 print(invalid.patient.id)
 int.sub@meta.data$Batches <- case_when(int.sub$Patient_ID %in% invalid.patient.id ~ 'Small_N_patients',
                              TRUE ~ int.sub$Patient_ID)
