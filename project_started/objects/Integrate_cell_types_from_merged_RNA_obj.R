@@ -84,6 +84,8 @@ panc.my <- DietSeurat(panc.my, assays = 'RNA')
 
 int.sub <- subset(x = panc.my, cells = rownames(dplyr::filter(panc.my@meta.data, !grepl('Doubl', .data[[cell_column]]))))
 
+ct<- unique(int.sub@meta.data[[cell_column]])
+print(ct)
 print(dim(int.sub))
 
 
