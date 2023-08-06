@@ -245,7 +245,7 @@ names(geneSets) <- str_replace_all(names(geneSets), '_', '-')
 
 print(names(geneSets))
 
-#Run_AUCell(obj, geneSets, name = add_filename)
+Run_AUCell(obj, geneSets, name = add_filename)
 
 
 
