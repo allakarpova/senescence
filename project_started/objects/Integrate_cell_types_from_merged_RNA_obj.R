@@ -88,8 +88,13 @@ ct<- unique(int.sub@meta.data[[cell_column]])
 print(ct)
 print(dim(int.sub))
 
+cell.patient.count <- int.sub@meta.data %>% group_by(Patient_ID) %>% tally()
+invalid.patient.id <- cell.patient.count %>% filter(n<30) %>% pull(Patient_ID)
+print(invalid.patient.id)
+int.sub$Batches <- case_when(int.sub$Patient_ID %in% invalid.patient.id ~ 'Small_N_patients',
+                             TRUE ~ int.sub$Patient_ID)
 
-all.rna.list <- SplitObject(int.sub, split.by = 'Patient_ID')
+all.rna.list <- SplitObject(int.sub, split.by = 'Batches')
 
 all.rna.list <- lapply(X = all.rna.list, FUN = function(x) {
   DefaultAssay(x) <- 'RNA'
