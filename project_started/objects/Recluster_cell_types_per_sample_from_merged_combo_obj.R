@@ -92,9 +92,9 @@ panc.my <- readRDS(input.path)
 panc.my <- AddMetaData(panc.my, my.metadata)
 
 annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v86,  standard.chromosomes = TRUE)
-seqlevelsStyle(annotations) <- 'UCSC'
+genome(annotations) <- "NA"
+seqlevelsStyle(annotations) <- 'UCSC' # instead of USCS because it keeps return error https://github.com/stuart-lab/signac/issues/826
 genome(annotations) <- "hg38"
-
 
 cell.types.oi <- c('Hepatocytes', 'Cholangiocytes', 'Hepatic stellate cells', 
                    'Central venous LSECs', 'Noninflammatory macs','Inflammatory macs')
