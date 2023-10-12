@@ -124,7 +124,7 @@ print(dim(panc.my))
 int <- runHarmonyNormalization(panc.my)
 
 cat('saving the object...\n')
-saveRDS(int,  saveRDS(int,  paste0("Harmony_RNA_", add_filename,"_",ct, "_no_doublets.rds")))
+saveRDS(int,  paste0("Harmony_RNA_", add_filename,"_",ct, "_no_doublets.rds"))
 
 
 
