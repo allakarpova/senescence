@@ -92,6 +92,7 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
   
   toplot <- cbind(Embeddings(obj, reduction = 'wnn.umap'), df) %>%
     mutate(Signature = s)
+  rownames(toplot) <- colnames(obj)
   colnames(toplot)[1:2] <- c( 'UMAP_1',  'UMAP_2')
   fwrite(toplot, glue::glue("{ct}_{s}_correlation_Spearman.tsv"), row.names = T, sep='\t')
   
@@ -245,7 +246,7 @@ names(geneSets) <- str_replace_all(names(geneSets), '_', '-')
 
 print(names(geneSets))
 
-Run_AUCell(obj, geneSets, name = add_filename)
+#Run_AUCell(obj, geneSets, name = add_filename)
 
 
 
@@ -268,6 +269,7 @@ all.signatures <- rbind(sensig,signatures)
 project.scores <- all.signatures$ont %>% unique %>% map(function(s) {
   Run_projectr(obj, s, add_filename, dot.size = 0.1)})
 project.scores <- do.call('cbind', project.scores)
+rownames(project.scores) <- colnames(obj)
 
 fwrite(project.scores, glue::glue("{add_filename}_all_sign_projectR.tsv"), row.names = T, sep='\t')
 
