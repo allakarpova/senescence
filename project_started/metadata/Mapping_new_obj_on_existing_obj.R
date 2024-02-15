@@ -70,7 +70,10 @@ ref.obj <- AddMetaData(ref.obj, meta)
 
 
 DefaultAssay(ref.obj) <- 'SCT'
-ref.obj <- RunUMAP(ref.obj, return.model = TRUE)
+ref.obj <- RunUMAP(ref.obj, dims=1:30,  
+                   nn.name = "weighted.nn", 
+                   reduction.name = "wnn.umap", 
+                   reduction.key = "wnnUMAP_", return.model = TRUE)
 
 DefaultAssay(query.obj) <- 'SCT'
 
