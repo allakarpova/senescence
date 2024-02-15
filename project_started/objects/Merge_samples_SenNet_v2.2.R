@@ -182,6 +182,8 @@ if (data.type == '5sc') {
   dt.tofilter = "3' scRNA"
 } else if (data.type == 'combo' | grepl('multi|Multi', data.type)) {
   dt.tofilter = "Combo RNA"
+} else if (data.type == "3' snRNA" | grepl('snRNA', data.type)) {
+  dt.tofilter = c("Combo RNA", "3' snRNA")
 }
 cat(paste('Data type to use', dt.tofilter))
 
@@ -204,7 +206,7 @@ samples <- read_sheet("https://docs.google.com/spreadsheets/d/1VeWme__vvVHAhHaQB
                       sheet = "Patient single cells data", trim_ws = T)
 
 samples <- samples %>% dplyr::filter(`Include in downstream` == 'Yes')
-samples <- samples %>% dplyr::filter(`Data type` == dt.tofilter)
+samples <- samples %>% dplyr::filter(`Data type` %in% dt.tofilter)
 samples <- samples %>% dplyr::filter(Tissue == tis.tofilter)
 samples <- samples %>% dplyr::filter(Species == species)
 samples <- samples %>% dplyr::select(`Patient ID`,`Sample name`, `Data type`, Age, Tissue, `Rds objects`)
