@@ -68,4 +68,4 @@ print(total.metadata$orig.ident %>% unique)
 total.metadata <- merge(total.metadata, samples, by = 'Sample', all.x = TRUE) %>% 
   data.frame(row.names = paste(.$Sample, .$V1, sep = '_')) %>% dplyr::select(-V1)
 
-fwrite(total.metadata, paste0('All_',length(samples.id),'_samples_metadata_data_freeze_', ver,'.tsv'), sep = '\t', row.names = TRUE)
+fwrite(total.metadata, paste0('All_',length(unique(total.metadata$Sample)),'_samples_metadata_data_freeze_', ver,'.tsv'), sep = '\t', row.names = TRUE)
