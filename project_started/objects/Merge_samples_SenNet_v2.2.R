@@ -233,7 +233,7 @@ if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filenam
     print(s)
     obj=readRDS(p) 
     print(paste('opened', s))
-    if (dt.tofilter == 'Combo RNA') {
+    if (dt.tofilter == 'Combo RNA' & length(dt.tofilter) == 1) {
       DefaultAssay(obj) <- assay.towork
       if (!file.exists(Fragments(obj)[[1]]@path)) stop("Urgh, this sample object can't locate fragments file")
       obj <- DietSeurat(obj, assays = c(assay.towork, 'RNA'))
@@ -255,7 +255,7 @@ if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filenam
 if (dt.tofilter == 'Combo RNA' & length(dt.tofilter) == 1) {
   if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filename,".rds"))) {
     
-    
+
     cat('doing normalization of combo object\n')
     dir.create('peaks')
   
