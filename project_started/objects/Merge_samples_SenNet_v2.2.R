@@ -332,7 +332,7 @@ if (dt.tofilter == 'Combo RNA' & length(dt.tofilter) == 1) {
     SCTransform(
       assay = 'RNA',
       vars.to.regress = c("nCount_RNA", "percent.mt", "S.Score", "G2M.Score"),
-      return.only.var.genes = FALSE, verbose = F) %>%
+      return.only.var.genes = TRUE, verbose = F) %>%
     RunPCA(assay = 'SCT', do.print = FALSE, verbose = F) %>%
     RunUMAP(dims = 1:30,reduction.name = 'umap.rna', reduction.key = 'rnaUMAP_', verbose = F) 
   
