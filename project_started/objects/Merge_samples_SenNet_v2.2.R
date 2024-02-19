@@ -252,7 +252,7 @@ if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filenam
   stopImplicitCluster()
 }
 
-if (dt.tofilter == 'Combo RNA') {
+if (dt.tofilter == 'Combo RNA' & length(dt.tofilter) == 1) {
   if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filename,".rds"))) {
     
     
@@ -433,7 +433,7 @@ if (dt.tofilter == 'Combo RNA') {
                           "S.Score", 
                           "G2M.Score"
                           ),
-      return.only.var.genes = FALSE, verbose = T) %>%
+      return.only.var.genes = TRUE, verbose = T) %>%
     RunPCA(assay = 'SCT', do.print = FALSE, verbose = T) %>%
     RunUMAP(dims = 1:30,reduction.name = 'umap.rna', reduction.key = 'rnaUMAP_', verbose = T) %>%
     FindNeighbors( dims = 1:30) %>%
