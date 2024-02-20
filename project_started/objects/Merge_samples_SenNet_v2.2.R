@@ -461,5 +461,8 @@ if (dt.tofilter == 'Combo RNA' & length(dt.tofilter) == 1) {
                combined@meta.data), 
          paste0(length(samples.id),"_Merged_normalized_",add_filename,".metadata.tsv"), sep = '\t', row.names = T)
   
+  cat('saving the object...\n')
+  saveRDS(combined,  paste0(length(samples.id),"_Merged_normalized_",add_filename,".rds"))
+  
 }
 
