@@ -90,7 +90,7 @@ Run_correlation <- function(obj, s, ct, dot.size = 1, cor.adjust.method = 'fdr')
     data.frame(check.rows = F, check.names = F)
   colnames(df) <- c('rho', 'p.val','p.adj')
   
-  toplot <- cbind(Embeddings(obj, reduction = 'wnn.umap'), df) %>%
+  toplot <- cbind(Embeddings(obj, reduction = reduction.name), df) %>%
     mutate(Signature = s)
   rownames(toplot) <- colnames(obj)
   colnames(toplot)[1:2] <- c( 'UMAP_1',  'UMAP_2')
@@ -140,7 +140,7 @@ Run_projectr <- function(obj, s, ct, dot.size = 1) {
   colnames(projections) <- s
   projections
   
-  toplot <- cbind(Embeddings(obj, reduction = 'wnn.umap'), projections) %>%
+  toplot <- cbind(Embeddings(obj, reduction = reduction.name), projections) %>%
     data.frame() %>%
     mutate(Signature = s)
   colnames(toplot)[1:2] <- c( 'UMAP_1',  'UMAP_2')
@@ -182,6 +182,11 @@ option_list = list(
               type="character",
               default='/diskmnt/Projects/HTAN_analysis_2/BRCA/Analyses/Alla/DCIS_project/cell_typing/st_obj/',
               help = "path to metadats file with cell types, make cell barcodes in the 1st column",
+              metavar="character"),
+  make_option(c("-r","--reduction"),
+              type="character",
+              default='wnn.umap',
+              help = "wnn.umap or umap",
               metavar="character")
   
 );
@@ -196,6 +201,7 @@ input.path <- opt$input.object
 out_path <- opt$output
 meta.path <- opt$metadata
 add_filename <- opt$extra
+reduction.name <- opt$reduction
 
 dir.create(out_path, showWarnings = F, recursive = TRUE)
 setwd(out_path)
