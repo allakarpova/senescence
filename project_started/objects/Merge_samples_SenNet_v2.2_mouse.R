@@ -217,9 +217,9 @@ cat('creating object \n')
 paths <- samples$`Rds objects`
 paths
 
-my.metadata <- fread(meta.path, data.table = F) %>% 
-  data.frame(row.names = 1, check.rows = F, check.names = F) %>%
-  dplyr::select(-seurat_clusters)
+# my.metadata <- fread(meta.path, data.table = F) %>% 
+#   data.frame(row.names = 1, check.rows = F, check.names = F) %>%
+#   dplyr::select(-seurat_clusters)
 
 if (!file.exists(paste0(length(samples.id),"_Mouse_Merged_not_normalized_",add_filename,".rds"))) {
   
@@ -302,7 +302,7 @@ if (dt.tofilter == 'Combo RNA') {
     
     
     combined <- merge(x = obj[[1]], y = obj[-1], add.cell.ids = samples.id)  
-    combined <- AddMetaData(combined, my.metadata)
+    #combined <- AddMetaData(combined, my.metadata)
     combined <- subset(combined, TSS.enrichment >= 4) # should remove crappy atac cells that form a cloud on the UMAP
     saveRDS(combined,  paste0(length(samples.id),"_Mouse_Merged_not_normalized_",add_filename,".rds"))
   } else {
@@ -440,7 +440,7 @@ if (dt.tofilter == 'Combo RNA') {
   cat('saving the object...\n')
   saveRDS(combined,  paste0(length(samples.id),"_Mouse_Merged_normalized_",add_filename,".rds"))
   
-  combined <- AddMetaData(combined, my.metadata)
+  #combined <- AddMetaData(combined, my.metadata)
   combined$Age.group <- case_when(combined$Age >= 100 ~ 'Old', 
                                   TRUE ~ 'Young')
   
