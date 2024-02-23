@@ -88,8 +88,8 @@ NormalizeRNA <- function(obj){
       ),
       return.only.var.genes = TRUE, verbose = T) %>%
     RunPCA(assay = 'SCT', do.print = FALSE, verbose = T) %>%
-    RunUMAP(dims = 1:30,reduction.name = 'umap.rna', reduction.key = 'rnaUMAP_', verbose = T) %>%
-    FindNeighbors( dims = 1:30) %>%
+    RunUMAP(dims = 1:50,reduction.name = 'umap.rna', reduction.key = 'rnaUMAP_', verbose = T) %>%
+    FindNeighbors( dims = 1:50) %>%
     FindClusters(resolution = 2, verbose = FALSE)
   
   return(obj)

@@ -88,8 +88,8 @@ NormalizeRNA <- function(obj){
       ),
       return.only.var.genes = TRUE, verbose = T) %>%
     RunPCA(assay = 'SCT', do.print = FALSE, verbose = T) %>%
-    RunUMAP(dims = 1:30,reduction.name = 'umap.rna', reduction.key = 'rnaUMAP_', verbose = T) %>%
-    FindNeighbors( dims = 1:30) %>%
+    RunUMAP(dims = 1:50,reduction.name = 'umap.rna', reduction.key = 'rnaUMAP_', verbose = T) %>%
+    FindNeighbors( dims = 1:50) %>%
     FindClusters(resolution = 2, verbose = FALSE)
   
   return(obj)
@@ -106,7 +106,7 @@ dir.create(out_path, showWarnings = F)
 setwd(out_path)
 
 my.metadata <- fread(meta.path, data.table = F, header = TRUE) %>% 
-  data.frame(row.names = 1, check.rows = F, check.names = F)
+  data.frame(row.names = 1, check.rows = F, check.names = F) 
 
 panc.my <- readRDS(input.path)
 panc.my <- AddMetaData(panc.my, my.metadata)
