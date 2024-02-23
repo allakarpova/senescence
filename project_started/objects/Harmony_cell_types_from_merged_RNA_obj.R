@@ -81,11 +81,6 @@ option_list = list(
               type="character",
               default=NULL,
               help = "path to metadats file with cell types, make cell barcodes in the 1st column",
-              metavar="character"),
-  make_option(c("-c","--cell_type_column"),
-              type="character",
-              default='cell_type',
-              help = "column in the metadata with most recent cell types",
               metavar="character")
   
 );
@@ -100,7 +95,7 @@ input.path <- opt$input.object
 out_path <- opt$output
 add_filename <- opt$extra
 meta.path <- opt$metadata.file
-cell_column <- opt$cell_type_column
+
 
 dir.create(out_path, showWarnings = F)
 setwd(out_path)
@@ -115,16 +110,11 @@ panc.my <- AddMetaData(panc.my, my.metadata)
 DefaultAssay(panc.my) <- 'RNA'
 panc.my <- DietSeurat(panc.my, assays = 'RNA')
 
-panc.my <- subset(x = panc.my, cells = rownames(dplyr::filter(panc.my@meta.data, !grepl('Doubl', .data[[cell_column]]))))
-
-ct<- unique(panc.my@meta.data[[cell_column]])
-print(ct)
-print(dim(panc.my))
 
 int <- runHarmonyNormalization(panc.my)
 
 cat('saving the object...\n')
-saveRDS(int,  paste0("Harmony_RNA_", add_filename,"_",ct, "_no_doublets.rds"))
+saveRDS(int,  paste0( add_filename,"_harmony.rds"))
 
 
 
