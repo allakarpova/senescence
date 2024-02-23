@@ -102,13 +102,17 @@ setwd(out_path)
 
 filter <- dplyr::filter
 select <- dplyr::select
-my.metadata <- fread(meta.path, data.table = F, header = TRUE) %>% 
-  data.frame(row.names = 1, check.rows = F, check.names = F)
 
 panc.my <- readRDS(input.path)
-panc.my <- AddMetaData(panc.my, my.metadata)
+
 DefaultAssay(panc.my) <- 'RNA'
 panc.my <- DietSeurat(panc.my, assays = 'RNA')
+
+if(!is.null(meta.path)) {
+  my.metadata <- fread(meta.path, data.table = F, header = TRUE) %>% 
+    data.frame(row.names = 1, check.rows = F, check.names = F)
+  panc.my <- AddMetaData(panc.my, my.metadata)
+}
 
 
 int <- runHarmonyNormalization(panc.my)
