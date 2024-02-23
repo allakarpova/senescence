@@ -30,29 +30,29 @@ suppressMessages(library(harmony))
 
 runHarmonyNormalization <- function(obj, dims=30, column = 'Patient_ID') {
   
-  obj[["percent.mt"]] <- PercentageFeatureSet(obj, pattern = "^MT-")
-  s.genes <- cc.genes$s.genes
-  g2m.genes <- cc.genes$g2m.genes
-  
-  obj <- CellCycleScoring(obj, s.features = s.genes, g2m.features = g2m.genes, set.ident = F)
-  
+  # obj[["percent.mt"]] <- PercentageFeatureSet(obj, pattern = "^MT-")
+  # s.genes <- cc.genes$s.genes
+  # g2m.genes <- cc.genes$g2m.genes
+  # 
+  # obj <- CellCycleScoring(obj, s.features = s.genes, g2m.features = g2m.genes, set.ident = F)
+  # 
+  # obj <- obj %>%
+  #   SCTransform(
+  #     assay = 'RNA',
+  #     vars.to.regress =  c("nCount_RNA", "percent.mt", "S.Score", "G2M.Score"),
+  #     conserve.memory = T,
+  #     return.only.var.genes = T,
+  #     verbose = FALSE
+  #   )
   obj <- obj %>%
-    SCTransform(
-      assay = 'RNA',
-      vars.to.regress =  c("nCount_RNA", "percent.mt", "S.Score", "G2M.Score"),
-      conserve.memory = T,
-      return.only.var.genes = T,
-      verbose = FALSE
-    )
-  obj <- obj %>%
-    RunPCA(assay = 'SCT', do.print = FALSE) %>%
+    #RunPCA(assay = 'SCT', do.print = FALSE) %>%
     RunHarmony(column, reduction = 'pca', assay.use = 'SCT') %>%
     FindNeighbors(reduction = "harmony", dims = 1:dims) %>%
     FindClusters(verbose = FALSE, resolution = 1.2, algorithm = 4,
                  method='igraph') %>%
-    RunUMAP(reduction = "harmony", dims = 1:dims)
+    RunUMAP(reduction = "harmony",reduction.name = 'umap.harmony', reduction.key = 'harmonyUMAP_',  dims = 1:dims)
   
-  obj <- NormalizeData(obj, assay = 'RNA')
+  #obj <- NormalizeData(obj, assay = 'RNA')
   
   return(obj)
   
@@ -105,8 +105,6 @@ select <- dplyr::select
 
 panc.my <- readRDS(input.path)
 
-DefaultAssay(panc.my) <- 'RNA'
-panc.my <- DietSeurat(panc.my, assays = 'RNA')
 
 if(!is.null(meta.path)) {
   my.metadata <- fread(meta.path, data.table = F, header = TRUE) %>% 
