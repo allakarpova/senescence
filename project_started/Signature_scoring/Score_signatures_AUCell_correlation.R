@@ -235,6 +235,10 @@ senmayo  <- senmayo %>% mutate(Senmayo.sub = paste0('Senmayo_', Classification))
 geneSets.senmayo <- list('SenMayo' = senmayo$Gene)
 geneSets.senmayo <- c(geneSets.senmayo, split(senmayo$Gene, senmayo$Senmayo.sub))
 
+#add sencan scores
+sencan <- fread('/diskmnt/Projects/SenNet_analysis/Main.analysis/gene_sets/sencan.csv', header = TRUE)
+geneSets.sencan <- list('SENCAN' = sencan$sencan)
+
 #add sensig scores
 sensig <- fread('/diskmnt/Projects/SenNet_analysis/Papers/SenSig/SkmFibGenes_SenSig_res0.05.ovl_with_cherryetal.csv')
 sensig <- sensig %>% mutate(Direction = case_when(sign(logFC)==1 ~ 'SenSig_up',
@@ -246,13 +250,13 @@ sensig <- sensig %>% mutate(Direction = case_when(sign(logFC)==1 ~ 'SenSig_up',
 geneSets.sensig <- split(sensig$HGNC.symbol, sensig$Direction)
 geneSets.sensig
 
-geneSets <- c(geneSets.msig, geneSets.msig2, geneSets.senmayo, geneSets.sensig)
+geneSets <- c(geneSets.msig, geneSets.msig2, geneSets.senmayo, geneSets.sensig, geneSets.sencan)
 names(geneSets) <- make.names(names(geneSets))
 names(geneSets) <- str_replace_all(names(geneSets), '_', '-')
 
 print(names(geneSets))
 
-#Run_AUCell(obj, geneSets, name = add_filename)
+Run_AUCell(obj, geneSets, name = add_filename)
 
 
 
