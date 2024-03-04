@@ -279,6 +279,7 @@ all.signatures <- rbind(sensig,signatures)
 project.scores <- all.signatures$ont %>% unique %>% map(function(s) {
   Run_projectr(obj, s, add_filename, dot.size = 0.1)})
 project.scores <- do.call('cbind', project.scores)
+project.scores <- data.frame(project.scores, check.rows = F, check.names = F)
 rownames(project.scores) <- colnames(obj)
 
 fwrite(project.scores, glue::glue("{add_filename}_all_sign_projectR.tsv"), row.names = T, sep='\t')
