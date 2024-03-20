@@ -57,7 +57,7 @@ normalize_rna_harmony <- function(obj, dims=30, column = 'Patient_ID') {
 integrate_atac <- function (int.sub.f,  k.w = 100, k.filter = 200, column = 'Patient_ID') {
   
   
-  DefaultAssay(int.sub.f) <- 'ATAC_immune'
+  DefaultAssay(int.sub.f) <- 'ATAC_merged'
   
   atac.split <- SplitObject(int.sub.f, split.by = column)
   
