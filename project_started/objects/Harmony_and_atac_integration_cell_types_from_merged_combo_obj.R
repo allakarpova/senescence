@@ -58,8 +58,8 @@ integrate_atac <- function (int.sub.f, column = 'Patient_ID') {
 
   DefaultAssay(int.sub.f) <- 'ATAC_merged'
   
-  int.sub.f@meta.data$Batches <- int.sub.f@meta.data[[,column]]
-  batch.counts <- table(int.sub.f$Batches)
+  int.sub.f@meta.data$Batches <- int.sub.f@meta.data[[column]]
+  batch.counts <- table(int.sub.f@meta.data$Batches)
   
   bad.count <- names(batch.counts)[batch.counts < 100]
   best.count <- names(batch.counts)[which.max(batch.counts)]
