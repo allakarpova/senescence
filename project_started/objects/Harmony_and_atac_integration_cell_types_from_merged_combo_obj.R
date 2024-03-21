@@ -55,11 +55,19 @@ normalize_rna_harmony <- function(obj, dims=30, column = 'Patient_ID') {
 
 
 integrate_atac <- function (int.sub.f,  k.w = 100, k.filter = 200, column = 'Patient_ID') {
-  
-  
+
   DefaultAssay(int.sub.f) <- 'ATAC_merged'
   
-  atac.split <- SplitObject(int.sub.f, split.by = column)
+  int.sub.f@meta.data$Batches <- int.sub.f@meta.data[[,column]]
+  batch.counts <- table(int.sub.f$Batches)
+  
+  bad.count <- names(batch.counts)[batch.counts < 100]
+  best.count <- names(batch.counts)[which.max(batch.counts)]
+  
+  int.sub.f@meta.data$Batches <- case_when( int.sub.f@meta.data$Batches %in% bad.count ~ best.count,
+                                              TRUE ~ int.sub.f@meta.data$Batches)
+  
+  atac.split <- SplitObject(int.sub.f, split.by = 'Batches')
   
   atac.split <- map(atac.split, function(obj) {
     obj <- FindTopFeatures(obj, min.cutoff = 50) %>%
