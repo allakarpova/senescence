@@ -54,7 +54,7 @@ normalize_rna_harmony <- function(obj, dims=30, column = 'Patient_ID') {
 }
 
 
-integrate_atac <- function (int.sub.f,  k.w = 100, k.filter = 200, column = 'Patient_ID') {
+integrate_atac <- function (int.sub.f, column = 'Patient_ID') {
 
   DefaultAssay(int.sub.f) <- 'ATAC_merged'
   
@@ -87,7 +87,7 @@ integrate_atac <- function (int.sub.f,  k.w = 100, k.filter = 200, column = 'Pat
     object.list = atac.split,
     anchor.features = rownames(int.sub.f),
     reduction = "rlsi",
-    k.filter=k.filter,
+    k.filter=200,
     dims = 2:50
   )
   
@@ -98,7 +98,7 @@ integrate_atac <- function (int.sub.f,  k.w = 100, k.filter = 200, column = 'Pat
     reductions = int.sub.f[["lsi"]],
     new.reduction.name = "integrated_lsi",
     dims.to.integrate = 1:50, 
-    k.weight = k.w
+    k.weight = 100
   )
   
   # create a new UMAP using the integrated embeddings
@@ -114,7 +114,7 @@ integrate_atac <- function (int.sub.f,  k.w = 100, k.filter = 200, column = 'Pat
 
 normalize_multiome_with_integration_harmony <- function(obj,dims = 50, harm.column='Patient_ID', atac.int.column = 'Patient_ID') {
   obj <- normalize_rna_harmony(obj, column = harm.column)
-  obj <- integrate_atac(obj, column = atac.int.column)
+  obj <- integrate_atac(int.sub.f = obj, column = atac.int.column)
   obj <- FindMultiModalNeighbors(obj, 
                                  reduction.list = list("harmony", "integrated_lsi"), 
                                  dims.list = list(1:dims, 2:dims))
