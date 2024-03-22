@@ -98,7 +98,7 @@ integrate_atac <- function (int.sub.f, column = 'Patient_ID') {
     reductions = int.sub.f[["lsi"]],
     new.reduction.name = "integrated_lsi",
     dims.to.integrate = 1:50, 
-    k.weight = 100
+    k.weight = 30
   )
   
   # create a new UMAP using the integrated embeddings
