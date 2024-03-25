@@ -113,8 +113,14 @@ integrate_atac <- function (int.sub.f, column = 'Patient_ID') {
 }
 
 normalize_multiome_with_integration_harmony <- function(obj,dims = 50, harm.column='Patient_ID', atac.int.column = 'Patient_ID') {
-  obj <- normalize_rna_harmony(obj, column = harm.column)
-  obj <- integrate_atac(int.sub.f = obj, column = atac.int.column)
+  if (!file.exists('Intermediate.rds')) {
+    obj <- normalize_rna_harmony(obj, column = harm.column)
+    obj <- integrate_atac(int.sub.f = obj, column = atac.int.column)
+    saveRDS(obj, 'Intermediate.rds')
+  } else {
+    obj <- readRDS('Intermediate.rds')
+  }
+  DefaultAssay(obj) <- 'SCT'
   obj <- FindMultiModalNeighbors(obj, 
                                  reduction.list = list("harmony", "integrated_lsi"), 
                                  dims.list = list(1:dims, 2:dims))
@@ -181,7 +187,7 @@ if(!is.null(meta.path)) {
 }
 
 
-int <- normalize_multiome_with_integration_harmony(panc.my)
+int <- normalize_multiome_with_integration_harmony(panc.my, dims = 30)
 
 cat('saving the object...\n')
 saveRDS(int,  paste0( add_filename,"_harmony_atac_integrated.rds"))
