@@ -113,7 +113,8 @@ panc.my <- AddMetaData(panc.my, my.metadata)
 
 
 cell.types.oi <- c('Hepatocytes', 'Cholangiocytes', 'Hepatic stellate cells', 
-                   'Central venous LSECs', 'Noninflammatory macs','Inflammatory macs')
+                   'Central venous LSECs', 'Noninflammatory macs','Inflammatory macs', 
+                   'KRT19+ cells', 'Pericytes')
 
 cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
 cell.types.touse <- intersect(cell.types.oi, cell.types.in.object)
