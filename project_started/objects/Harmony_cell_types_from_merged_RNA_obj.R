@@ -118,6 +118,9 @@ int <- runHarmonyNormalization(panc.my)
 cat('saving the object...\n')
 saveRDS(int,  paste0( add_filename,"_harmony.rds"))
 
+DimPlot(int, reduction='umap.harmony', group.by = 'Patient_ID')
+ggsave(glue::glue("Dimplot_{add_filename}_Patient.id.pdf"), width = 8, height = 5)
 
-
+DimPlot(int, reduction='umap.harmony', group.by = 'seurat_clusters')
+ggsave(glue::glue("Dimplot_{add_filename}_seurat_clusters.pdf"), width = 6.5, height = 5)
 
