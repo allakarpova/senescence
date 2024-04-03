@@ -107,6 +107,9 @@ cell_column <- opt$cell_type_column
 dir.create(out_path, showWarnings = F)
 setwd(out_path)
 
+select <- dplyr::select
+filter <- dplyr::filter
+
 my.metadata <- fread(meta.path, data.table = F, header = TRUE) %>% 
   data.frame(row.names = 1, check.rows = F, check.names = F) 
 
