@@ -27,7 +27,13 @@ suppressMessages(library(googlesheets4))
 suppressMessages(library(stringr))
 suppressMessages(library(doParallel))
 
-
+require(magrittr)
+library(ggplot2)
+library(RColorBrewer)
+library(JASPAR2020)
+library(TFBSTools)
+library(patchwork)
+library(chromVAR)
 
 ################################
 

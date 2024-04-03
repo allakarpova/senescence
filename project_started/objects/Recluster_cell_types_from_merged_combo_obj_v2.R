@@ -33,6 +33,7 @@ library(RColorBrewer)
 library(JASPAR2020)
 library(TFBSTools)
 library(patchwork)
+library(chromVAR)
 
 ################################
 
