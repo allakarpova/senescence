@@ -79,6 +79,8 @@ NormalizeRNA <- function(obj){
   DefaultAssay(obj) <- 'RNA'
   cat('normalizing RNA\n')
   obj <- obj %>%
+    NormalizeData(assay = 'RNA') %>%
+    CellCycleScoring(s.features = cc.genes.updated.2019$s.genes, g2m.features = cc.genes.updated.2019$g2m.genes, set.ident = F) %>%
     SCTransform(
       assay = 'RNA',
       vars.to.regress = c("nCount_RNA", 
