@@ -31,21 +31,8 @@ suppressMessages(library(harmony))
 
 normalize_rna_harmony <- function(obj, dims=30, column = 'Patient_ID') {
   DefaultAssay(obj) <- "SCT"
-  # obj[["percent.mt"]] <- PercentageFeatureSet(obj, pattern = "^MT-")
-  # s.genes <- cc.genes.updated.2019$s.genes
-  # g2m.genes <- cc.genes.updated.2019$g2m.genes
-  # obj <- CellCycleScoring(obj, s.features = s.genes, g2m.features = g2m.genes, set.ident = F)
-  # obj <- obj %>%
-  #   SCTransform(
-  #     assay = 'RNA',
-  #     method = "glmGamPoi",
-  #     vars.to.regress =  c("percent.mt", "S.Score", "G2M.Score"),
-  #     conserve.memory = T,
-  #     return.only.var.genes = T,
-  #     verbose = FALSE)
-  # 
   obj <- obj %>%
-    #RunPCA(assay = 'SCT', do.print = FALSE) %>%
+    RunPCA(assay = 'SCT', do.print = FALSE) %>% 
     RunHarmony(column, reduction = 'pca', assay.use = 'SCT') %>%
     RunUMAP(reduction = "harmony",reduction.name = 'umap.harmony', reduction.key = 'harmonyUMAP_',  dims = 1:dims)
   

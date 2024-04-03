@@ -165,7 +165,7 @@ cell.types.oi %>% walk (function(ct) {
     int.sub[["percent.mt"]] <- PercentageFeatureSet(int.sub, pattern = "^MT-") 
     int.sub <- int.sub %>%
       NormalizeData(assay = 'RNA') %>%
-      CellCycleScoring(s.features = cc.genes$s.genes, g2m.features = cc.genes$g2m.genes, set.ident = F)
+      CellCycleScoring(s.features = cc.genes.updated.2019$s.genes, g2m.features = cc.genes.updated.2019$g2m.genes, set.ident = F)
     
     int.sub <- int.sub %>%
       SCTransform(
