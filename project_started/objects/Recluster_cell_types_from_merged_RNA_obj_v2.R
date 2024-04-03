@@ -114,7 +114,7 @@ panc.my <- AddMetaData(panc.my, my.metadata)
 
 cell.types.oi <- c('Hepatocytes', 'Cholangiocytes', 'Hepatic stellate cells', 
                    'Central venous LSECs', 'Noninflammatory macs','Inflammatory macs', 
-                   'KRT19+ cells', 'Pericytes', 'LSECs', 'macs')
+                   'KRT19 cells', 'Pericytes', 'LSECs', 'macs')
 
 #cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
 #cell.types.touse <- intersect(cell.types.oi, cell.types.in.object)
@@ -124,17 +124,20 @@ print(dim(panc.my))
 
 
 cell.types.oi %>% walk (function(ct) {
-  print(ct)
-  int.sub <- subset(x = panc.my, 
-                    cells = rownames(dplyr::filter(panc.my@meta.data, 
-                                                   grepl(ct, .data[[cell_column]])
-                                                   )
-                                     )
-                    )
-  print(dim(int.sub))
-  int.sub <- NormalizeRNA(int.sub)
+  if(!file.exists(paste0(add_filename,"_",make.names(ct), ".rds"))) {
+    print(ct)
+    int.sub <- subset(x = panc.my, 
+                      cells = rownames(dplyr::filter(panc.my@meta.data, 
+                                                     grepl(ct, .data[[cell_column]])
+                      )
+                      )
+    )
+    print(dim(int.sub))
+    int.sub <- NormalizeRNA(int.sub)
+    
+    saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".rds"))
+  }
   
-  saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".rds"))
   
 })
 
