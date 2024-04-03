@@ -216,6 +216,17 @@ cell.types.oi %>% walk (function(ct) {
     cat('saving the object...\n')
     saveRDS(int.sub,  paste0(add_filename,"_",ct, ".chromvar.rds"))
     
+    DimPlot(int.sub, group.by = cell_column, reduction='wnn.umap', label = TRUE)
+    ggsave(glue::glue("Dimplot_{cell_column}_{ct}.pdf"),
+           height=5,width=7,useDingbats=FALSE,limitsize = FALSE)
+    
+    DimPlot(int.sub, group.by = 'Patient_ID', reduction='wnn.umap', label = TRUE)
+    ggsave(glue::glue("Dimplot_Patient_ID_{ct}.pdf"),
+           height=5,width=8,useDingbats=FALSE,limitsize = FALSE)
+    
+    DimPlot(int.sub, group.by = 'seurat_clusters', reduction='wnn.umap', label = TRUE)
+    ggsave(glue::glue("Dimplot_seurat_clusters_{ct}.pdf"),
+           height=5,width=8,useDingbats=FALSE,limitsize = FALSE)
   }
 }
 )

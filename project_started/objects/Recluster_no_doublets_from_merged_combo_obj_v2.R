@@ -195,9 +195,20 @@ DefaultAssay(int.sub) <- 'chromvar'
 int.sub@assays$chromvar@scale.data <- int.sub@assays$chromvar@data
 
 cat('saving the object...\n')
-saveRDS(int.sub,  paste0(add_filename,"_",ct, ".chromvar.rds"))
+saveRDS(int.sub,  paste0(add_filename,".chromvar.rds"))
 
 
+DimPlot(int.sub, group.by = cell_column, reduction='wnn.umap', label = TRUE)
+ggsave(glue::glue("Dimplot_{cell_column}_{add_filename}.pdf"),
+       height=5,width=7,useDingbats=FALSE,limitsize = FALSE)
+
+DimPlot(int.sub, group.by = 'Patient_ID', reduction='wnn.umap', label = TRUE)
+ggsave(glue::glue("Dimplot_Patient_ID_{add_filename}.pdf"),
+       height=5,width=8,useDingbats=FALSE,limitsize = FALSE)
+
+DimPlot(int.sub, group.by = 'seurat_clusters', reduction='wnn.umap', label = TRUE)
+ggsave(glue::glue("Dimplot_seurat_clusters_{add_filename}.pdf"),
+       height=5,width=8,useDingbats=FALSE,limitsize = FALSE)
 
 
 
