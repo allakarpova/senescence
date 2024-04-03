@@ -106,6 +106,9 @@ my.metadata <- fread(meta.path, data.table = F, header = TRUE) %>%
 panc.my <- readRDS(input.path)
 panc.my <- AddMetaData(panc.my, my.metadata)
 
+DefaultAssay(panc.my) <- 'RNA'
+panc.my <- DietSeurat(panc.my, assays = c('RNA', assay.towork))
+
 #add clinical info
 clinical <- fread('/diskmnt/Projects/SenNet_analysis/Main.analysis/clinical_data/Cohort_full_clinical_v4.csv', data.table = F) 
 clinical$Patient_ID <- paste0('SN', sprintf("%03d", as.numeric(clinical$`Participant ID`)), 'H1')
@@ -207,7 +210,7 @@ cell.types.oi %>% walk (function(ct) {
       SCTransform(
         assay = 'RNA',
         vars.to.regress = c("nCount_RNA", "percent.mt", "S.Score", "G2M.Score"),
-        return.only.var.genes = FALSE, verbose = F) %>%
+        return.only.var.genes = TRUE, verbose = F) %>%
       RunPCA(assay = 'SCT', do.print = FALSE, verbose = F) %>%
       RunUMAP(dims = 1:50,reduction.name = 'umap.rna', reduction.key = 'rnaUMAP_', verbose = F) 
     
