@@ -119,6 +119,7 @@ print(cell.types.touse)
 print(dim(panc.my))
 
 DefaultAssay(panc.my)=assay.towork
+Annotation(panc.my) <- annotations
 
 # Get a list of motif position frequency matrices from the JASPAR database
 pfm <- getMatrixSet(

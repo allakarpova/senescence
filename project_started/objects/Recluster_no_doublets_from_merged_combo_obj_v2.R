@@ -17,7 +17,7 @@ set.seed(1234)
 suppressMessages(library(dplyr))
 suppressMessages(library(data.table))
 
-suppressMessages(library(EnsDb.Hsapiens.v86))
+suppressMessages(library(EnsDb.Hsapiens.v100))
 suppressMessages(library(GenomicRanges))
 suppressMessages(library(future))
 suppressMessages(library(optparse))
@@ -72,6 +72,11 @@ option_list = list(
               type="character",
               default='cell_type',
               help = "column in the metadata with most recent cell types",
+              metavar="character"),
+  make_option(c("-a", "--assay"),
+              type="character",
+              default="ATAC_merged", 
+              help="which assay should be used to merge objects? ATAC_merged, peaks",
               metavar="character")
   
 );
@@ -87,6 +92,7 @@ out_path <- opt$output
 add_filename <- opt$extra
 meta.path <- opt$metadata.file
 cell_column <- opt$cell_type_column
+assay.towork <- opt$assay
 
 dir.create(out_path, showWarnings = F)
 setwd(out_path)
@@ -97,6 +103,43 @@ my.metadata <- fread(meta.path, data.table = F, header = TRUE) %>%
 panc.my <- readRDS(input.path)
 panc.my <- AddMetaData(panc.my, my.metadata)
 
+annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v100,  standard.chromosomes = TRUE)
+genome(annotations) <- "NA"
+seqlevelsStyle(annotations) <- 'UCSC' # instead of USCS because it keeps return error https://github.com/stuart-lab/signac/issues/826
+genome(annotations) <- "hg38"
+
+DefaultAssay(panc.my)=assay.towork
+Annotation(panc.my) <- annotations
+
+# Get a list of motif position frequency matrices from the JASPAR database
+pfm <- getMatrixSet(
+  x = JASPAR2020,
+  opts = list(species = 9606, all_versions = FALSE)
+)
+
+# Scan the DNA sequence of each peak for the presence of each motif
+motif.matrix <- CreateMotifMatrix(
+  features = granges(panc.my),
+  pwm = pfm,
+  genome = 'BSgenome.Hsapiens.UCSC.hg38',
+  use.counts = FALSE
+)
+
+# Create a new Motif object to store the results
+motif <- CreateMotifObject(
+  data = motif.matrix,
+  pwm = pfm
+)
+
+# Add the Motif object to the assay
+panc.my <- SetAssayData(
+  object = panc.my,
+  assay = assay.towork,
+  slot = 'motifs',
+  new.data = motif
+)
+
+cat('subset')
 int.sub <- subset(x = panc.my, cells = rownames(dplyr::filter(panc.my@meta.data, !grepl('Doubl', .data[[cell_column]]))))
 
 ######## Normalize RNA
@@ -105,7 +148,7 @@ cat('normalizing RNA\n')
 int.sub[["percent.mt"]] <- PercentageFeatureSet(int.sub, pattern = "^MT-") 
 int.sub <- int.sub %>%
   NormalizeData(assay = 'RNA') %>%
-  CellCycleScoring(s.features = cc.genes$s.genes, g2m.features = cc.genes$g2m.genes, set.ident = F)
+  CellCycleScoring(s.features = cc.genes.updated.2019$s.genes, g2m.features = cc.genes.updated.2019$g2m.genes, set.ident = F)
 
 int.sub <- int.sub %>%
   SCTransform(
