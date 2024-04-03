@@ -103,6 +103,37 @@ my.metadata <- fread(meta.path, data.table = F, header = TRUE) %>%
 panc.my <- readRDS(input.path)
 panc.my <- AddMetaData(panc.my, my.metadata)
 
+
+#add clinical info
+clinical <- fread('/diskmnt/Projects/SenNet_analysis/Main.analysis/clinical_data/Cohort_full_clinical_v4.csv', data.table = F) 
+clinical$Patient_ID <- paste0('SN', sprintf("%03d", as.numeric(clinical$`Participant ID`)), 'H1')
+clinical$Gender <- factor(clinical$Gender, levels = c('Woman', 'Man'))
+
+clinical <- clinical %>%
+  mutate(
+    BMI.cat = case_when(`Body Mass Index` < 25 ~ 'Healthy weight',
+                        `Body Mass Index` < 30 ~ 'Overweight',
+                        `Body Mass Index` < 35 ~ 'Obese',
+                        `Body Mass Index` >= 35 ~ 'Extremely obese'),
+    BMI.cat = factor(BMI.cat, levels =c('Healthy weight','Overweight','Obese','Extremely obese')),
+    Age.group = case_when(Age < 40 ~ 'Young',
+                          Age >= 60 ~ 'Old',
+                          TRUE ~ 'Middle age'),
+    Age.group =factor(Age.group, levels = c('Young', 'Middle age', 'Old')),
+    Alcohol = str_split_fixed(`Alcohol History`, ' ', 2)[,1],
+    Smoking = str_split_fixed(`Smoking History`, ' ', 2)[,1],
+    Race = str_split_fixed(Race, ' ', 2)[,1],
+    History.of.Cancer = `History of Cancer`)
+
+head(clinical)
+
+panc.my@meta.data <- panc.my@meta.data %>% 
+  rownames_to_column(var='B') %>% 
+  select(-Age, -Age.group) %>%
+  left_join(clinical, by='Patient_ID') %>%
+  column_to_rownames(var = 'B')
+
+
 annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v100,  standard.chromosomes = TRUE)
 genome(annotations) <- "NA"
 seqlevelsStyle(annotations) <- 'UCSC' # instead of USCS because it keeps return error https://github.com/stuart-lab/signac/issues/826
