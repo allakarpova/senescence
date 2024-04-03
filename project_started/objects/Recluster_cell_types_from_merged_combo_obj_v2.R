@@ -131,7 +131,7 @@ head(clinical)
 
 panc.my@meta.data <- panc.my@meta.data %>% 
   rownames_to_column(var='B') %>% 
-  select(-Age, -Age.group) %>%
+  select(-Age) %>%
   left_join(clinical, by='Patient_ID') %>%
   column_to_rownames(var = 'B')
 
