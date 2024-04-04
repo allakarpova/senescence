@@ -25,7 +25,7 @@ suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 
 suppressMessages(library(googlesheets4))
 suppressMessages(library(stringr))
-suppressMessages(library(doParallel))
+#suppressMessages(library(doParallel))
 
 require(magrittr)
 library(ggplot2)
@@ -41,7 +41,48 @@ library(chromVAR)
 ####### FUNCTIONS ##################
 ####################################
 
-
+runAllChromvar <- function(obj, assay = 'ATAC_merged') {
+  DefaultAssay(obj) <- assay
+  # Get a list of motif position frequency matrices from the JASPAR database
+  pfm <- getMatrixSet(
+    x = JASPAR2020,
+    opts = list(species = 9606, all_versions = FALSE)
+  )
+  
+  # Scan the DNA sequence of each peak for the presence of each motif
+  motif.matrix <- CreateMotifMatrix(
+    features = granges(obj),
+    pwm = pfm,
+    genome = 'BSgenome.Hsapiens.UCSC.hg38',
+    use.counts = FALSE
+  )
+  
+  # Create a new Motif object to store the results
+  motif <- CreateMotifObject(
+    data = motif.matrix,
+    pwm = pfm
+  )
+  
+  # Add the Motif object to the assay
+  obj <- SetAssayData(
+    object = obj,
+    assay = assay,
+    slot = 'motifs',
+    new.data = motif
+  )
+  
+  cat('doing chromvar\n')
+  obj <- RegionStats(object = obj, genome = BSgenome.Hsapiens.UCSC.hg38)
+  
+  obj <- RunChromVAR(
+    object = obj,
+    genome = BSgenome.Hsapiens.UCSC.hg38
+  )
+  
+  DefaultAssay(obj) <- 'chromvar'
+  obj@assays$chromvar@scale.data <- obj@assays$chromvar@data
+  return(obj)
+}
 
 ############################################
 
@@ -147,33 +188,6 @@ genome(annotations) <- "hg38"
 DefaultAssay(panc.my)=assay.towork
 Annotation(panc.my) <- annotations
 
-# Get a list of motif position frequency matrices from the JASPAR database
-pfm <- getMatrixSet(
-  x = JASPAR2020,
-  opts = list(species = 9606, all_versions = FALSE)
-)
-
-# Scan the DNA sequence of each peak for the presence of each motif
-motif.matrix <- CreateMotifMatrix(
-  features = granges(panc.my),
-  pwm = pfm,
-  genome = 'BSgenome.Hsapiens.UCSC.hg38',
-  use.counts = FALSE
-)
-
-# Create a new Motif object to store the results
-motif <- CreateMotifObject(
-  data = motif.matrix,
-  pwm = pfm
-)
-
-# Add the Motif object to the assay
-panc.my <- SetAssayData(
-  object = panc.my,
-  assay = assay.towork,
-  slot = 'motifs',
-  new.data = motif
-)
 
 cat('subset')
 int.sub <- subset(x = panc.my, cells = rownames(dplyr::filter(panc.my@meta.data, !grepl('Doubl', .data[[cell_column]]))))
@@ -219,16 +233,7 @@ int.sub <- FindMultiModalNeighbors(int.sub,
 
 
 #run chromvar
-cat('doing chromvar\n')
-int.sub <- RegionStats(object = int.sub, genome = BSgenome.Hsapiens.UCSC.hg38)
-
-int.sub <- RunChromVAR(
-  object = int.sub,
-  genome = BSgenome.Hsapiens.UCSC.hg38
-)
-
-DefaultAssay(int.sub) <- 'chromvar'
-int.sub@assays$chromvar@scale.data <- int.sub@assays$chromvar@data
+int.sub <- runAllChromvar(int.sub, assay = assay.towork)
 
 cat('saving the object...\n')
 saveRDS(int.sub,  paste0(add_filename,".chromvar.rds"))
