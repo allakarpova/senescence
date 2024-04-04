@@ -19,7 +19,7 @@ suppressMessages(library(data.table))
 
 suppressMessages(library(EnsDb.Hsapiens.v100))
 suppressMessages(library(GenomicRanges))
-suppressMessages(library(future))
+#suppressMessages(library(future))
 suppressMessages(library(optparse))
 suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 
