@@ -172,7 +172,7 @@ clinical <- clinical %>%
     Race = str_split_fixed(Race, ' ', 2)[,1],
     History.of.Cancer = `History of Cancer`)
 
-head(clinical)
+#head(clinical)
 
 panc.my@meta.data <- panc.my@meta.data %>% 
   rownames_to_column(var='B') %>% 
@@ -187,9 +187,9 @@ genome(annotations) <- "NA"
 seqlevelsStyle(annotations) <- 'UCSC' # instead of USCS because it keeps return error https://github.com/stuart-lab/signac/issues/826
 genome(annotations) <- "hg38"
 
-cell.types.oi <- c('Hepatocytes', 'Cholangiocytes', 'Hepatic stellate cells', 
+cell.types.oi <- c( 'Pericytes', 'Hepatocytes', 'Cholangiocytes', 'Hepatic stellate cells', 
                    'Central venous LSECs', 'Noninflammatory macs','Inflammatory macs', 
-                   'KRT19 cells', 'Pericytes', 'LSECs', 'macs')
+                   'KRT19 cells', 'LSECs', 'macs')
 
 cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
 cell.types.touse <- intersect(cell.types.oi, cell.types.in.object)
