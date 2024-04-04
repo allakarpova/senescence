@@ -1,7 +1,7 @@
 # Recluster no doublets a combo object 
 ###libraries
 ##################
-library(future)
+#library(future)
 
 #plan("multicore", workers = 20)
 #options(future.globals.maxSize = 100 * 1024 ^ 3)
