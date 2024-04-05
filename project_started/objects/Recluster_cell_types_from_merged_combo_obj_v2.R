@@ -189,7 +189,7 @@ genome(annotations) <- "hg38"
 
 cell.types.oi <- c( 'Pericytes',  'Cholangiocytes', 'Hepatic stellate cells', 
                    'Central venous LSECs', 'Noninflammatory macs','Inflammatory macs', 
-                   'KRT19 cells', 'LSECs', 'macs', 'Hepatocytes')
+                    'LSECs', 'macs', 'KRT19 cells', 'Hepatocytes')
 
 cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
 cell.types.touse <- intersect(cell.types.oi, cell.types.in.object)
@@ -256,7 +256,7 @@ cell.types.oi %>% walk (function(ct) {
     int.sub <- runAllChromvar(int.sub, assay = assay.towork)
     
     cat('saving the object...\n')
-    saveRDS(int.sub,  paste0(add_filename,"_",ct, ".chromvar.rds"))
+    saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".chromvar.rds"))
     
     DimPlot(int.sub, group.by = cell_column, reduction='wnn.umap', label = TRUE)
     ggsave(glue::glue("Dimplot_{cell_column}_{ct}.pdf"),
