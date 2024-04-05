@@ -266,14 +266,17 @@ cell.types.oi %>% walk (function(ct) {
     DimPlot(int.sub, group.by = 'seurat_clusters', reduction='wnn.umap', label = TRUE)
     ggsave(glue::glue("Dimplot_seurat_clusters_{ct}.pdf"),
            height=5,width=8,useDingbats=FALSE,limitsize = FALSE)
+    
     } else {
       int.sub <- readRDS(paste0(add_filename,"_",make.names(ct), ".rds"))
-      #run chromvar
-      int.sub <- runAllChromvar(int.sub, assay = assay.towork)
       
-      cat('saving the object...\n')
-      saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".chromvar.rds"))
     }
+    
+    #run chromvar
+    int.sub <- runAllChromvar(int.sub, assay = assay.towork)
+    
+    cat('saving the object...\n')
+    saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".chromvar.rds"))
     
   }
 }
