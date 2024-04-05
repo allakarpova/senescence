@@ -189,7 +189,7 @@ genome(annotations) <- "hg38"
 
 cell.types.oi <- c( 'Pericytes',  'Cholangiocytes', 'Hepatic stellate cells', 
                    'Central venous LSECs', 'Noninflammatory macs','Inflammatory macs', 
-                    'LSECs', 'macs', 'KRT19 cells', 'Hepatocytes')
+                    'LSECs', 'macs', 'Hepatocytes')
 
 cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
 cell.types.touse <- intersect(cell.types.oi, cell.types.in.object)
