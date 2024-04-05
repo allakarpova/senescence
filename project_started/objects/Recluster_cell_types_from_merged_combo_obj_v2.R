@@ -203,6 +203,7 @@ Annotation(panc.my) <- annotations
 
 cell.types.oi %>% walk (function(ct) {
   if(!file.exists(paste0(add_filename,"_",make.names(ct), ".chromvar.rds"))) {
+    if(!file.exists(paste0(add_filename,"_",make.names(ct), ".rds"))) {
       print(ct)
       int.sub <- subset(x = panc.my, 
                         cells = rownames(dplyr::filter(panc.my@meta.data, 
@@ -251,12 +252,8 @@ cell.types.oi %>% walk (function(ct) {
                reduction.key = "wnnUMAP_")  %>%
       FindClusters(graph.name = "wsnn", algorithm = 1, resolution = 2, verbose = T)
     
-    
-    #run chromvar
-    int.sub <- runAllChromvar(int.sub, assay = assay.towork)
-    
     cat('saving the object...\n')
-    saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".chromvar.rds"))
+    saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".rds"))
     
     DimPlot(int.sub, group.by = cell_column, reduction='wnn.umap', label = TRUE)
     ggsave(glue::glue("Dimplot_{cell_column}_{ct}.pdf"),
@@ -269,6 +266,15 @@ cell.types.oi %>% walk (function(ct) {
     DimPlot(int.sub, group.by = 'seurat_clusters', reduction='wnn.umap', label = TRUE)
     ggsave(glue::glue("Dimplot_seurat_clusters_{ct}.pdf"),
            height=5,width=8,useDingbats=FALSE,limitsize = FALSE)
+    } else {
+      int.sub <- readRDS(paste0(add_filename,"_",make.names(ct), ".rds"))
+      #run chromvar
+      int.sub <- runAllChromvar(int.sub, assay = assay.towork)
+      
+      cat('saving the object...\n')
+      saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".chromvar.rds"))
+    }
+    
   }
 }
 )
