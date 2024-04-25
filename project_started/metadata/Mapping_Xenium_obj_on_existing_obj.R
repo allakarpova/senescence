@@ -58,7 +58,7 @@ cell_column <- opt$cell.column
 
 ref.obj <- readRDS(ref.path)
 
-meta <- fread(meta.path) %>%
+meta <- fread(meta.path, header = TRUE) %>%
   column_to_rownames(var = 'V1') 
 print (head(meta))
 
