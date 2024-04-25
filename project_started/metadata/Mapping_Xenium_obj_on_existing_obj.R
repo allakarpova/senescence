@@ -59,7 +59,10 @@ cell_column <- opt$cell.column
 ref.obj <- readRDS(ref.path)
 
 meta <- fread(meta.path) %>%
-  column_to_rownames(var = 'V1') %>%    
+  column_to_rownames(var = 'V1') 
+print (head(meta))
+
+meta <- meta %>%    
   select(all_of(cell_column))
 ref.obj <- AddMetaData(ref.obj, meta)
 
