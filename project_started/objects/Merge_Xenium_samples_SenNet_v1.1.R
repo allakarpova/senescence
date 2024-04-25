@@ -1,7 +1,6 @@
 ## Alla Karpova
-## 02.15.2024 Alla added species filter
-### merge objects of one data type from sennet project
-# v2.1 05.30.2023 
+### merge Xenium objects from sennet project
+# v1.1 04.25.2024 
 
 suppressMessages(library(Signac))
 suppressMessages(library(Seurat))
