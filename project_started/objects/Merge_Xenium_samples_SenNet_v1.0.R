@@ -29,11 +29,6 @@ suppressMessages(library(doParallel))
 ############## FUNCTIONS #####################
 
 option_list = list(
-  make_option(c("-i", "--input.folder"),
-              type="character",
-              default=NULL, 
-              help="path to folder with cancer level merged rds objects",
-              metavar="character"),
   make_option(c("-o", "--output"),
               type="character",
               default="./", 
@@ -76,7 +71,7 @@ opt_parser = OptionParser(option_list=option_list);
 opt = parse_args(opt_parser);
 
 # read in initial arguments
-input.path <- opt$input.folder
+
 out_path <- opt$output
 add_filename <- opt$extra
 meta.path <- opt$metadata.file
