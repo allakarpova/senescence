@@ -118,9 +118,9 @@ cat('creating object \n')
 paths <- samples$`Rds objects`
 paths
 
-my.metadata <- fread(meta.path, data.table = F) %>% 
-  data.frame(row.names = 1, check.rows = F, check.names = F) %>%
-  dplyr::select(-seurat_clusters)
+# my.metadata <- fread(meta.path, data.table = F) %>% 
+#   data.frame(row.names = 1, check.rows = F, check.names = F) %>%
+#   dplyr::select(-seurat_clusters)
 
 if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filename,".rds"))) {
   
