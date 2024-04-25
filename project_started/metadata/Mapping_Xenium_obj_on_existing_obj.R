@@ -110,7 +110,7 @@ walk2(sample.table$V1, sample.table$V2, function(sample, query.path){
     p1+p2
     ggsave(glue::glue('Dimplot_predicted.celltype.l1_ref_{sample}.pdf'), width = 12, height = 5)
     
-    DimPlot(query.obj, reduction = "umap", group.by = "predicted.celltype.l1", label = TRUE, label.size = 3, repel = TRUE) + NoLegend()
+    DimPlot(query.obj, group.by = "predicted.celltype.l1", label = TRUE, label.size = 3, repel = TRUE) + NoLegend()
     ggsave(glue::glue('Dimplot_predicted.celltype.l1_{sample}.pdf'), width = 7, height = 5)
     
     #saveRDS(query.obj, glue::glue('Mapped_object_{sample}.rds'))
