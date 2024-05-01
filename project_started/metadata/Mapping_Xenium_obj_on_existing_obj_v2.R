@@ -113,6 +113,6 @@ walk2(sample.table$V1, sample.table$V2, function(sample, query.path){
     
     #saveRDS(query.obj, glue::glue('Mapped_object_{sample}.rds'))
     query.obj@meta.data %>% 
-      dplyr::rename(cell_type = predicted.celltype.l1) %>% 
+      dplyr::rename(cell_type_predicted = predicted.celltype.l1) %>% 
       fwrite( glue::glue('{sample}_processed_Xenium_cellTyped.meta.data'), sep = '\t', row.names = T)
   })
