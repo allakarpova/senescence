@@ -46,7 +46,7 @@ out.obj <- str_split(out.obj, '[/]')[[1]][str_count(out.obj, '/')+1]
 
 cat('opening object \n')
 obj <- readRDS(input_path)
-DefaultAssay(obj) <- "ATAC_immune"
+DefaultAssay(obj) <- "ATAC_merged"
 cat('done \n')
 
 annot <- readRDS('/diskmnt/Projects/snATAC_analysis/immune/conda_env_files/Annotations.EnsDb.Hsapiens.v100.rds')
