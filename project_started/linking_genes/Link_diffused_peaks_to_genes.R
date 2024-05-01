@@ -35,10 +35,8 @@ opt = parse_args(opt_parser)
 input_path <- opt$input
 out_path <- opt$output
 
-dir.create(out_path, showWarnings = F)
+dir.create(out_path, recursive = T, showWarnings = F)
 setwd(out_path)
-
-dir.create('out')
 
 
 out.obj <- str_replace(input_path, pattern = 'rds', replacement = 'diffuse.links.only.rds')
@@ -120,4 +118,4 @@ obj <- LinkPeaks(
 toreturn <- Links(obj)
 
 print(out.obj)
-saveRDS(toreturn, paste0('out/', out.obj))
+saveRDS(toreturn, out.obj)
