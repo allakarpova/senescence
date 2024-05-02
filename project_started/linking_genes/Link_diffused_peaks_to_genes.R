@@ -1,4 +1,4 @@
-# Alla Karpova run LinkPeaks on 100kb windows on a multiome object immune cells
+# Alla Karpova run LinkPeaks on 100kb windows on a multiome object of liver cells
 
 suppressMessages(library(Signac))
 suppressMessages(library(Seurat))
@@ -62,7 +62,7 @@ chr.size.vector <- as.numeric(chr.size$chr_length)
 names(chr.size.vector) <- chr.size$seqnames
 bins <- GenomicRanges::tileGenome(seqlengths = chr.size.vector, tilewidth = 100000, cut.last.tile.in.chrom = TRUE)
 
-frag <- Fragments(obj@assays$ATAC_immune)
+frag <- Fragments(obj@assays$ATAC_merged)
 #this will remove fragment objects with just 1 or 0 cells because they fail FeatureMatrix function
 frag.filtered <- frag[do.call( 'c', lapply(frag, function(x) length(x@cells) > 1))]
 
