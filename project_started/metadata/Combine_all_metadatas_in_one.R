@@ -17,6 +17,11 @@ option_list = list(
               type="character",
               default="v1.0", 
               help="version of the metadata",
+              metavar="character"),
+  make_option(c("-s", "--species"),
+              type="character",
+              default="Human", 
+              help="Human or Mouse",
               metavar="character")
 );
 
@@ -25,6 +30,7 @@ opt = parse_args(opt_parser);
 
 input.folder <- opt$input.folder
 ver <- opt$version
+spec <- opt$species
 
 meta.files <- list.files(path = input.folder, pattern = '*data', full.names = T)
 meta.files <- meta.files[!grepl('All_', meta.files)]
@@ -34,6 +40,8 @@ gs4_deauth()
 samples <- read_sheet("https://docs.google.com/spreadsheets/d/1VeWme__vvVHAhHaQB3wCvAGuq-w3WrhZ5cT-7Mh7Sr0/edit#gid=0", 
                       sheet = "Patient single cells data", trim_ws = T) %>%
   dplyr::filter(`Include in downstream` == 'Yes') %>%
+  dplyr::filter(Species == spec) %>%
+  dplyr::filter(grepl('RNA|ATAC', `Data type`)) %>%
   dplyr::select(`Patient ID`,`Sample name`, `Data type`, Age, Tissue) %>%
   as.data.frame() %>% rename(Sample = `Sample name`,
                              Patient_ID = `Patient ID`,
