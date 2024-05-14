@@ -53,53 +53,51 @@ setwd(out_path)
 
 panc<- readRDS(input.path)
 
-# for (resol in c(0.1, 0.3, 0.5, 0.7, seq(1, 1.8, 0.1), 2)) {
-#   if(opt$multiome) {
-#     panc <- FindClusters(panc, resolution = resol,graph.name = "wsnn", algorithm = 4, method = "igraph")
-#   } else {
-#     panc <- FindClusters(panc, resolution = resol, algorithm = 4, method = "igraph")
-#   }
-#   
-#   print(head(panc@meta.data))
-# }
-# 
-# cluster.tb <- panc@meta.data %>% select(dplyr::contains('res.'))
-# fwrite(cluster.tb, paste0('Clusters_res0.1_to_2_alg4_', add_filename, '.txt'), sep='\t', row.names = TRUE)
-# 
-# 
-# for (resol in c(0.1, 0.3, 0.5, 0.7, seq(1, 1.8, 0.1), 2)) {
-#   if(opt$multiome) {
-#     panc <- FindClusters(panc, resolution = resol,graph.name = "wsnn", algorithm = 1)
-#   } else {
-#     panc <- FindClusters(panc, resolution = resol, algorithm = 1)
-#   }
-#   
-#   print(head(panc@meta.data))
-# }
-# 
-# cluster.tb <- panc@meta.data %>% select(dplyr::contains('res.'))
-# fwrite(cluster.tb, paste0('Clusters_res0.1_to_2_alg1_', add_filename, '.txt'), sep='\t', row.names = TRUE)
-# 
-# for (resol in c(0.1, 0.3, 0.5, 0.7, seq(1, 1.8, 0.1), 2)) {
-#   if(opt$multiome) {
-#     panc <- FindClusters(panc, resolution = resol,graph.name = "wsnn", algorithm = 3)
-#   } else {
-#     panc <- FindClusters(panc, resolution = resol, algorithm = 3)
-#   }
-#   print(head(panc@meta.data))
-# }
-# cluster.tb <- panc@meta.data %>% select(dplyr::contains('res.'))
-# fwrite(cluster.tb, paste0('Clusters_res0.1_to_2_alg3_', add_filename, '.txt'), sep='\t', row.names = TRUE)
+resolutions <- c(seq(0.1, 0.9, 0.1), seq(1, 1.8, 0.2), 2)
+algs <- c(4,1,3)
+
+for (resol in resolutions) {
+  if(opt$multiome) {
+    panc <- FindClusters(panc, resolution = resol,graph.name = "wsnn", algorithm = 4, method = "igraph")
+  } else {
+    panc <- FindClusters(panc, resolution = resol, algorithm = 4, method = "igraph")
+  }
+
+  print(head(panc@meta.data))
+}
+
+cluster.tb <- panc@meta.data %>% select(dplyr::contains('res.'))
+fwrite(cluster.tb, paste0('Clusters_res0.1_to_2_alg4_', add_filename, '.txt'), sep='\t', row.names = TRUE)
+
+
+for (resol in resolutions) {
+  if(opt$multiome) {
+    panc <- FindClusters(panc, resolution = resol,graph.name = "wsnn", algorithm = 1)
+  } else {
+    panc <- FindClusters(panc, resolution = resol, algorithm = 1)
+  }
+
+  print(head(panc@meta.data))
+}
+
+cluster.tb <- panc@meta.data %>% select(dplyr::contains('res.'))
+fwrite(cluster.tb, paste0('Clusters_res0.1_to_2_alg1_', add_filename, '.txt'), sep='\t', row.names = TRUE)
+
+for (resol in resolutions) {
+  if(opt$multiome) {
+    panc <- FindClusters(panc, resolution = resol,graph.name = "wsnn", algorithm = 3)
+  } else {
+    panc <- FindClusters(panc, resolution = resol, algorithm = 3)
+  }
+  print(head(panc@meta.data))
+}
+cluster.tb <- panc@meta.data %>% select(dplyr::contains('res.'))
+fwrite(cluster.tb, paste0('Clusters_res0.1_to_2_alg3_', add_filename, '.txt'), sep='\t', row.names = TRUE)
 
 
 
 library(clustree)
 clustree.dir <- out_path
-
-
-resolutions <- c(0.1, 0.3, 0.5, 0.7, seq(1, 1.8, 0.1), 2)
-algs <- c(4,1, 3)
-
 
 reduct <- ifelse(opt$multiome, 'wnn.umap', 'umap.harmony')
 algs %>% walk( function(a) {
