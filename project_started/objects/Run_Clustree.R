@@ -101,6 +101,7 @@ resolutions <- c(0.1, 0.3, 0.5, 0.7, seq(1, 1.8, 0.1), 2)
 algs <- c(4,1, 3)
 
 
+reduct <- ifelse(opt$multiome, 'wnn.umap', 'umap.harmony')
 algs %>% walk( function(a) {
   rna.clust <- fread(paste0(clustree.dir,'Clusters_res0.1_to_2_alg',a,'_',add_filename,'.txt')) %>%
     data.frame(row.names = 1)
@@ -113,7 +114,7 @@ algs %>% walk( function(a) {
   panc <- AddMetaData(panc, rna.clust)
   
   resolutions %>% walk(function( res) {
-    DimPlot(panc, group.by = paste0('SCT_snn_res.',res), label =TRUE)
+    DimPlot(panc, group.by = paste0('SCT_snn_res.',res), reduction = reduct, label =TRUE)
     ggsave(paste0("Dimplot_T-cell_",res,"_alg",a,".pdf"),height=5,width=6,useDingbats=FALSE)
   })
 })
