@@ -23,7 +23,7 @@ suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 suppressMessages(library(googlesheets4))
 suppressMessages(library(stringr))
 suppressMessages(library(harmony))
-
+library(doParallel)
 
 ############## FUNCTIONS #####################
 
