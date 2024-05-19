@@ -152,6 +152,14 @@ cell.types.oi %>% walk (function(ct) {
     int.sub <- runHarmonyNormalization(int.sub)
     
     saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), "_harmony.rds"))
+    
+    ct <- make.names(ct)
+    DimPlot(int, reduction='umap.harmony', group.by = 'Patient_ID')
+    ggsave(glue::glue("Dimplot_{ct}_Patient.id.pdf"), width = 8, height = 5)
+    
+    DimPlot(int, reduction='umap.harmony', group.by = 'seurat_clusters')
+    ggsave(glue::glue("Dimplot_{ct}_seurat_clusters.pdf"), width = 6.5, height = 5)
+    
   }
   
 })
