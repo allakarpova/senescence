@@ -98,16 +98,16 @@ setwd(out_path)
 select <- dplyr::select
 filter <- dplyr::filter
 
-panc.my <- readRDS(input.path)
+panc <- readRDS(input.path)
 
 panc@meta.data$Sample[is.na(panc@meta.data$Sample)] <- 'NA'
 panc <- subset(panc, Sample=='NA' , invert = TRUE)
 
 samples.id <- panc@meta.data %>% pull(Sample) %>% unique()
 
-panc.my <- NormalizeRNA(panc.my)
+panc <- NormalizeRNA(panc)
 
-saveRDS(panc.my,  paste0(length(samples.id),"_Merged_normalized_", add_filename,".rds"))
+saveRDS(panc,  paste0(length(samples.id),"_Merged_normalized_", add_filename,".rds"))
 
 
 
