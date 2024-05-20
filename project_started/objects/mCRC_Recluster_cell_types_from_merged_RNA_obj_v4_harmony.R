@@ -132,7 +132,7 @@ panc.my <- AddMetaData(panc.my, my.metadata)
 
 
 
-cell.types.oi <- c( 'Hepatocytes', 'Cholangiocytes', "Fibroblasts|stellate", 'Endothelial',
+cell.types.oi <- c('Endothelial|LSECs', 'Hepatocytes', 'Cholangiocytes', "Fibroblasts|stellate", 
                     'macs')
 
 print(dim(panc.my))
