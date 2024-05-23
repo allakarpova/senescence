@@ -60,7 +60,7 @@ option_list = list(
               metavar="character"),
   make_option(c("-v","--panel.version"),
               type="character",
-              default='8UT8B9_hMulti',
+              default=NULL,
               help = "8UT8B9_hMulti or 8P9U3X_hMulti",
               metavar="character")
   
