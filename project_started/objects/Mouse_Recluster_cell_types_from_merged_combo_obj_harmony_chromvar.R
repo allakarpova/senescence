@@ -26,7 +26,7 @@ suppressMessages(library(optparse))
 
 suppressMessages(library(googlesheets4))
 suppressMessages(library(stringr))
-#suppressMessages(library(doParallel))
+suppressMessages(library(harmony))
 
 require(magrittr)
 library(ggplot2)
