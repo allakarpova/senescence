@@ -117,15 +117,15 @@ samples.id <- samples$`Sample name` %>% as.character()
 
 cat (paste("Samples found:" ,length(samples.id), '\n'))
 
-cat('creating object \n')
-paths <- samples$`Rds objects`
-paths
 
 # my.metadata <- fread(meta.path, data.table = F) %>% 
 #   data.frame(row.names = 1, check.rows = F, check.names = F) %>%
 #   dplyr::select(-seurat_clusters)
 
 if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filename,".rds"))) {
+  cat('creating object \n')
+  paths <- samples$`Rds objects`
+  paths
   
   # make the list of objects
   registerDoParallel(cores=10)
