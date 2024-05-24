@@ -162,7 +162,15 @@ Annotation(panc.my) <- annotations
 
 
 cat('subset')
-int.sub <- subset(x = panc.my, cells = rownames(dplyr::filter(panc.my@meta.data, !grepl('Doubl', .data[[cell_column]]))))
+
+cells.keep <- panc.my@meta.data %>% 
+  filter(!grepl('Doubl', .data[[cell_column]])) %>% 
+  filter(!is.na(.data[[cell_column]])) %>%
+  filter(.data[[cell_column]] != 'NA' ) %>%
+  rownames
+
+int.sub <- subset(x = panc.my, cells = cells.keep)
+
 
 ######## Normalize RNA
 DefaultAssay(int.sub) <- 'RNA'
