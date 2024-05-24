@@ -171,10 +171,10 @@ if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filenam
       verbose = T) %>%
     RunPCA(assay = 'SCT', do.print = FALSE, verbose = T) %>%
     RunUMAP(dims = 1:30, verbose = T) %>%
-    RunHarmony('Patient_ID', reduction = 'pca', assay.use = 'SCT') %>%
-    FindNeighbors(reduction = "harmony", dims = 1:30) %>%
-    FindClusters(resolution = 1.5, verbose = FALSE) %>%
-    RunUMAP(reduction = "harmony",reduction.name = 'umap.harmony', reduction.key = 'harmonyUMAP_',  dims = 1:30)
+    #RunHarmony('Patient_ID', reduction = 'pca', assay.use = 'SCT') %>%
+    FindNeighbors(dims = 1:30) %>%
+    FindClusters(resolution = 1.5, verbose = FALSE) #%>%
+    #RunUMAP(reduction = "harmony",reduction.name = 'umap.harmony', reduction.key = 'harmonyUMAP_',  dims = 1:30)
   
   
   cat('saving the object...\n')
@@ -184,11 +184,11 @@ if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filenam
   combined$Age.group <- case_when(combined$Age >= 50 ~ 'Old', 
                                   TRUE ~ 'Young')
   
-  DimPlot(combined,  group.by = "seurat_clusters", reduction = 'umap.harmony', label = TRUE, label.size = 2.5, repel = TRUE)
+  DimPlot(combined,  group.by = "seurat_clusters", label = TRUE, label.size = 2.5, repel = TRUE)
   ggsave(paste0(length(samples.id),"_Merged_clusters_", add_filename, ".pdf"),height=10,width=11)
-  DimPlot(combined,  group.by = "Sample", reduction = 'umap.harmony', label = TRUE, label.size = 2.5, repel = TRUE)
+  DimPlot(combined,  group.by = "Sample",  label = TRUE, label.size = 2.5, repel = TRUE)
   ggsave(paste0(length(samples.id),"_Merged_Sample_", add_filename, ".pdf"),height=10,width=12)
-  DimPlot(combined,  group.by = "Age.group", reduction = 'umap.harmony', label = TRUE, label.size = 2.5, repel = TRUE)
+  DimPlot(combined,  group.by = "Age.group",  label = TRUE, label.size = 2.5, repel = TRUE)
   ggsave(paste0(length(samples.id),"_Merged_Age.group_", add_filename, ".pdf"),height=10,width=11)
   
   

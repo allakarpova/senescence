@@ -147,9 +147,9 @@ panc.my@meta.data <- panc.my@meta.data %>%
   column_to_rownames(var = 'B')
 
 
-cell.types.oi <- c('Hepatocytes', 'Cholangiocytes', 'Hepatic stellate cells', 
+cell.types.oi <- c('Pericytes', 'Hepatocytes', 'Cholangiocytes', 'Hepatic stellate cells', 
                    'Central venous LSECs', 'Noninflammatory macs','Inflammatory macs', 
-                   'KRT19 cells', 'Pericytes', 'LSECs', 'macs')
+                   'KRT19 cells',  'LSECs', 'macs')
 
 #cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
 #cell.types.touse <- intersect(cell.types.oi, cell.types.in.object)

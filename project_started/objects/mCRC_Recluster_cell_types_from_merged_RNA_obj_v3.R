@@ -97,6 +97,19 @@ NormalizeRNA <- function(obj){
   return(obj)
 }
 
+runHarmonyNormalization <- function(obj, dims=30, column = 'Patient_ID') {
+
+  obj <- obj %>%
+    RunHarmony(column, reduction = 'pca', assay.use = 'SCT') %>%
+    FindNeighbors(reduction = "harmony", dims = 1:dims) %>%
+    FindClusters(verbose = FALSE, resolution = 1.2, algorithm = 4,
+                 method='igraph') %>%
+    RunUMAP(reduction = "harmony",reduction.name = 'umap.harmony', reduction.key = 'harmonyUMAP_',  dims = 1:dims)
+  
+  return(obj)
+  
+}
+
 # read in initial arguments
 input.path <- opt$input.object
 out_path <- opt$output
@@ -117,39 +130,9 @@ panc.my <- readRDS(input.path)
 panc.my <- AddMetaData(panc.my, my.metadata)
 
 
-#add clinical info
-clinical <- fread('/diskmnt/Projects/SenNet_analysis/Main.analysis/clinical_data/Cohort_full_clinical_v5.csv', data.table = F) 
-clinical$Patient_ID <- paste0('SN', sprintf("%03d", as.numeric(clinical$`Participant ID`)), 'H1')
-clinical$Gender <- factor(clinical$Gender, levels = c('Woman', 'Man'))
 
-clinical <- clinical %>%
-  mutate(
-    BMI.cat = case_when(`Body Mass Index` < 25 ~ 'Healthy weight',
-                        `Body Mass Index` < 30 ~ 'Overweight',
-                        `Body Mass Index` < 35 ~ 'Obese',
-                        `Body Mass Index` >= 35 ~ 'Extremely obese'),
-    BMI.cat = factor(BMI.cat, levels =c('Healthy weight','Overweight','Obese','Extremely obese')),
-    Age.group = case_when(Age < 40 ~ 'Young',
-                          Age >= 60 ~ 'Old',
-                          TRUE ~ 'Middle age'),
-    Age.group =factor(Age.group, levels = c('Young', 'Middle age', 'Old')),
-    Alcohol = str_split_fixed(`Alcohol History`, ' ', 2)[,1],
-    Smoking = str_split_fixed(`Smoking History`, ' ', 2)[,1],
-    Race = str_split_fixed(Race, ' ', 2)[,1],
-    History.of.Cancer = `History of Cancer`)
-
-head(clinical)
-
-panc.my@meta.data <- panc.my@meta.data %>% 
-  rownames_to_column(var='B') %>% 
-  #select(-Age, -Age.group) %>%
-  left_join(clinical, by='Patient_ID') %>%
-  column_to_rownames(var = 'B')
-
-
-cell.types.oi <- c('Pericytes', 'Hepatocytes', 'Cholangiocytes', 'Hepatic stellate cells', 
-                   'Central venous LSECs', 'Noninflammatory macs','Inflammatory macs', 
-                   'Mesothelial cells',  'LSECs', 'macs')
+cell.types.oi <- c( 'Hepatocytes', 'Cholangiocytes', 'Fibroblasts', 'Endothelial',
+                    'macs')
 
 #cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
 #cell.types.touse <- intersect(cell.types.oi, cell.types.in.object)
@@ -169,8 +152,9 @@ cell.types.oi %>% walk (function(ct) {
     )
     print(dim(int.sub))
     int.sub <- NormalizeRNA(int.sub)
+    int.sub <- runHarmonyNormalization(int.sub)
     
-    saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".rds"))
+    saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), "_harmony.rds"))
   }
   
 })

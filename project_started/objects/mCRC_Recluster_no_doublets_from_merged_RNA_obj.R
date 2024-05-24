@@ -117,8 +117,13 @@ panc.my <- AddMetaData(panc.my, my.metadata)
 
 
 
+cells.keep <- panc.my@meta.data %>% 
+    filter(!grepl('Doubl', .data[[cell_column]])) %>% 
+    filter(!is.na(.data[[cell_column]])) %>%
+    filter(.data[[cell_column]] != 'NA' ) %>%
+    rownames
 
-panc.my <- subset(x = panc.my, cells = rownames(dplyr::filter(panc.my@meta.data, !grepl('Doubl', .data[[cell_column]]))))
+panc.my <- subset(x = panc.my, cells = cells.keep)
 
 panc.my <- NormalizeRNA(panc.my)
 
