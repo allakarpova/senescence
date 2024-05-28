@@ -117,9 +117,10 @@ panc.my <- readRDS(input.path)
 panc.my <- AddMetaData(panc.my, my.metadata)
 
 
-cell.types.oi <- c('Pericytes', 'Hepatocytes', 'Cholangiocytes', 'Hepatic stellate cells', 
-                   'Noninflammatory macs','Inflammatory macs', 
-                   'Mesothelial cells',  'LSECs','LSECs|Portal', 'macs')
+cell.types.oi <- c('stellate|fibroblasts','LSECs','LSECs|Portal',  
+                   'Pericytes', 'Hepatocytes', 'Cholangiocytes', 
+                   'Noninflammatory macs','Inflammatory macs',  'macs',
+                   'Mesothelial cells')
 
 #cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
 #cell.types.touse <- intersect(cell.types.oi, cell.types.in.object)
