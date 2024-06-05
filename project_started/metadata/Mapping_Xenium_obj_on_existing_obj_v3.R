@@ -60,10 +60,12 @@ ref.obj <- readRDS(ref.path)
 
 meta <- fread(meta.path, header = TRUE) %>%
   column_to_rownames(var = 'V1') 
-print (head(meta))
+
 
 meta <- meta %>%    
   select(all_of(cell_column), cell_type_broad)
+
+print (head(meta))
 ref.obj <- AddMetaData(ref.obj, meta)
 
 
