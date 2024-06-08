@@ -70,8 +70,8 @@ ref.obj <- AddMetaData(ref.obj, meta)
 
 
 DefaultAssay(ref.obj) <- 'SCT'
-ref.obj <- RunUMAP(ref.obj, dims=1:30,  
-                    return.model = TRUE)
+#ref.obj <- RunUMAP(ref.obj, dims=1:30,  
+#                    return.model = TRUE)
 
 
 sample.table <- fread(samples.tb.path, header = F)
@@ -100,9 +100,8 @@ walk2(sample.table$V1, sample.table$V2, function(sample, query.path){
       reference = ref.obj,
       refdata = list(
         celltype.l0 = 'cell_type_broad',
-        celltype.l1 = cell_column),
-      reference.reduction = "pca", 
-      reduction.model = "umap"
+        celltype.l1 = cell_column)
+    
     )
     
     
