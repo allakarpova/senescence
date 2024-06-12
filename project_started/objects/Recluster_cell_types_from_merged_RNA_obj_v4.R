@@ -130,6 +130,7 @@ print(dim(panc.my))
 
 
 cell.types.oi %>% walk (function(ct) {
+  print(make.names(ct))
   if(!file.exists(paste0(add_filename,"_",make.names(ct), ".rds"))) {
     print(ct)
     int.sub <- subset(x = panc.my, 
