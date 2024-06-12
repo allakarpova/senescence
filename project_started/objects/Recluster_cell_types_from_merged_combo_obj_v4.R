@@ -157,10 +157,9 @@ genome(annotations) <- "NA"
 seqlevelsStyle(annotations) <- 'UCSC' # instead of USCS because it keeps return error https://github.com/stuart-lab/signac/issues/826
 genome(annotations) <- "hg38"
 
-cell.types.oi <- c('stellate|fibroblasts','LSECs','LSECs|Portal',  
+cell.types.oi <- c('LSECs|Portal endo', 'stellate|fibroblasts','LSECs',
                    'Pericytes', 'Hepatocytes', 'Cholangiocytes', 
-                   'Noninflammatory macs','Inflammatory macs',  'macs',
-                   'Mesothelial cells')
+                   'Noninflammatory macs','Inflammatory macs',  'macs')
 
 cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
 cell.types.touse <- intersect(cell.types.oi, cell.types.in.object)
