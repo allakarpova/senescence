@@ -117,7 +117,7 @@ panc.my <- readRDS(input.path)
 panc.my <- AddMetaData(panc.my, my.metadata)
 
 
-cell.types.oi <- c('stellate|fibroblasts','LSECs','LSECs|Portal',  
+cell.types.oi <- c('LSECs|Portal endo', 'stellate|fibroblasts','LSECs',
                    'Pericytes', 'Hepatocytes', 'Cholangiocytes', 
                    'Noninflammatory macs','Inflammatory macs',  'macs',
                    'Mesothelial cells')
