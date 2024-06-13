@@ -56,13 +56,26 @@ panc<- readRDS(input.path)
 resolutions <- c(seq(0.1, 0.9, 0.1), seq(1, 1.8, 0.2), 2)
 algs <- c(4,1,3)
 
+markers.from.email <- c('GLB1', 'CDKN1A','CDKN2A', 'TP53', 'SERPINE1','FOS', 'JUN', 'IL1A', 'IL6', 'CXCL8', 'CCL2', 'MMP1', 'MMP3', 'IGFBP7')
+more.markers <- c('CDKN2D', 'CENPB', 'JUN', 'LMNB1',  'TNF', 'TGFB1', 'CXCL1', 'NFKB1', 'RELA', 'HMGB1', 'SERPINB2',
+                  'INHBA', 'GDF15', 'CCL11', 'MIF', 'CXCL2', 'IGFBP3', 'CCL24', 'MMP12', 'CXCL10', 'TP53BP1', 'BCL2', 'MKI67', 'TOP2A')
+dotplot.color <- colorRampPalette(c('#eae2b7','#f3d180', '#fcbf49','#f77f00','#d62828','#6b2c39', '#003049'))(10) 
+
 for (resol in resolutions) {
   if(opt$multiome) {
     panc <- FindClusters(panc, resolution = resol,graph.name = "wsnn", algorithm = 4, method = "igraph")
   } else {
     panc <- FindClusters(panc, resolution = resol, algorithm = 4, method = "igraph")
   }
-
+  
+  DotPlot(panc, features = c(markers.from.email, more.markers), cluster.idents = TRUE,
+          group.by = 'seurat_clusters') + scale_color_gradientn(colors = dotplot.color) +
+    theme(axis.text.x = element_text(angle =90, hjust=1, vjust=0.5))+
+    scale_size_area(limits=c(0,20), oob=scales::squish)
+  ggsave(paste0('Dotplot_', 'known_and_extra_markers','_by_seurat_clusters_',resol,'_alg4.pdf'), 
+         width = length(c(markers.from.email, more.markers))*0.2 + 2, height = 5)
+  
+  
   print(head(panc@meta.data))
 }
 
@@ -76,7 +89,12 @@ for (resol in resolutions) {
   } else {
     panc <- FindClusters(panc, resolution = resol, algorithm = 1)
   }
-
+  DotPlot(panc, features = c(markers.from.email, more.markers), cluster.idents = TRUE,
+          group.by = 'seurat_clusters') + scale_color_gradientn(colors = dotplot.color) +
+    theme(axis.text.x = element_text(angle =90, hjust=1, vjust=0.5))+
+    scale_size_area(limits=c(0,20), oob=scales::squish)
+  ggsave(paste0('Dotplot_', 'known_and_extra_markers','_by_seurat_clusters_',resol,'_alg1.pdf'), 
+         width = length(c(markers.from.email, more.markers))*0.2 + 2, height = 5)
   print(head(panc@meta.data))
 }
 
@@ -89,6 +107,13 @@ for (resol in resolutions) {
   } else {
     panc <- FindClusters(panc, resolution = resol, algorithm = 3)
   }
+  
+  DotPlot(panc, features = c(markers.from.email, more.markers), cluster.idents = TRUE,
+          group.by = 'seurat_clusters') + scale_color_gradientn(colors = dotplot.color) +
+    theme(axis.text.x = element_text(angle =90, hjust=1, vjust=0.5))+
+    scale_size_area(limits=c(0,20), oob=scales::squish)
+  ggsave(paste0('Dotplot_', 'known_and_extra_markers','_by_seurat_clusters_',resol,'_alg3.pdf'), 
+         width = length(c(markers.from.email, more.markers))*0.2 + 2, height = 5)
   print(head(panc@meta.data))
 }
 cluster.tb <- panc@meta.data %>% select(dplyr::contains('res.'))
