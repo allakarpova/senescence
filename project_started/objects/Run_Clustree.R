@@ -57,7 +57,7 @@ resolutions <- c(seq(0.1, 0.9, 0.1), seq(1, 1.8, 0.2), 2)
 algs <- c(4,1,3)
 
 markers.from.email <- c('GLB1', 'CDKN1A','CDKN2A', 'TP53', 'SERPINE1','FOS', 'JUN', 'IL1A', 'IL6', 'CXCL8', 'CCL2', 'MMP1', 'MMP3', 'IGFBP7')
-more.markers <- c('CDKN2D', 'CENPB', 'JUN', 'LMNB1',  'TNF', 'TGFB1', 'CXCL1', 'NFKB1', 'RELA', 'HMGB1', 'SERPINB2',
+more.markers <- c('CDKN2D', 'CENPB', 'LMNB1',  'TNF', 'TGFB1', 'CXCL1', 'NFKB1', 'RELA', 'HMGB1', 'SERPINB2',
                   'INHBA', 'GDF15', 'CCL11', 'MIF', 'CXCL2', 'IGFBP3', 'CCL24', 'MMP12', 'CXCL10', 'TP53BP1', 'BCL2', 'MKI67', 'TOP2A')
 dotplot.color <- colorRampPalette(c('#eae2b7','#f3d180', '#fcbf49','#f77f00','#d62828','#6b2c39', '#003049'))(10) 
 
