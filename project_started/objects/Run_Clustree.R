@@ -54,7 +54,7 @@ setwd(out_path)
 panc<- readRDS(input.path)
 
 resolutions <- c(seq(0.1, 0.9, 0.1), seq(1, 1.8, 0.2), 2)
-algs <- c(4,1,3)
+algs <- c(4,1)
 
 markers.from.email <- c('GLB1', 'CDKN1A','CDKN2A', 'TP53', 'SERPINE1','FOS', 'JUN', 'IL1A', 'IL6', 'CXCL8', 'CCL2', 'MMP1', 'MMP3', 'IGFBP7')
 more.markers <- c('CDKN2D', 'CENPB', 'LMNB1',  'TNF', 'TGFB1', 'CXCL1', 'NFKB1', 'RELA', 'HMGB1', 'SERPINB2',
@@ -101,23 +101,23 @@ for (resol in resolutions) {
 cluster.tb <- panc@meta.data %>% select(dplyr::contains('res.'))
 fwrite(cluster.tb, paste0('Clusters_res0.1_to_2_alg1_', add_filename, '.txt'), sep='\t', row.names = TRUE)
 
-for (resol in resolutions) {
-  if(opt$multiome) {
-    panc <- FindClusters(panc, resolution = resol,graph.name = "wsnn", algorithm = 3)
-  } else {
-    panc <- FindClusters(panc, resolution = resol, algorithm = 3)
-  }
-  
-  DotPlot(panc, features = c(markers.from.email, more.markers), cluster.idents = TRUE,
-          group.by = 'seurat_clusters') + scale_color_gradientn(colors = dotplot.color) +
-    theme(axis.text.x = element_text(angle =90, hjust=1, vjust=0.5))+
-    scale_size_area(limits=c(0,20), oob=scales::squish)
-  ggsave(paste0('Dotplot_', 'known_and_extra_markers','_by_seurat_clusters_',resol,'_alg3.pdf'), 
-         width = length(c(markers.from.email, more.markers))*0.2 + 2, height = 5)
-  print(head(panc@meta.data))
-}
-cluster.tb <- panc@meta.data %>% select(dplyr::contains('res.'))
-fwrite(cluster.tb, paste0('Clusters_res0.1_to_2_alg3_', add_filename, '.txt'), sep='\t', row.names = TRUE)
+# for (resol in resolutions) {
+#   if(opt$multiome) {
+#     panc <- FindClusters(panc, resolution = resol,graph.name = "wsnn", algorithm = 3)
+#   } else {
+#     panc <- FindClusters(panc, resolution = resol, algorithm = 3)
+#   }
+#   
+#   DotPlot(panc, features = c(markers.from.email, more.markers), cluster.idents = TRUE,
+#           group.by = 'seurat_clusters') + scale_color_gradientn(colors = dotplot.color) +
+#     theme(axis.text.x = element_text(angle =90, hjust=1, vjust=0.5))+
+#     scale_size_area(limits=c(0,20), oob=scales::squish)
+#   ggsave(paste0('Dotplot_', 'known_and_extra_markers','_by_seurat_clusters_',resol,'_alg3.pdf'), 
+#          width = length(c(markers.from.email, more.markers))*0.2 + 2, height = 5)
+#   print(head(panc@meta.data))
+# }
+# cluster.tb <- panc@meta.data %>% select(dplyr::contains('res.'))
+# fwrite(cluster.tb, paste0('Clusters_res0.1_to_2_alg3_', add_filename, '.txt'), sep='\t', row.names = TRUE)
 
 
 
