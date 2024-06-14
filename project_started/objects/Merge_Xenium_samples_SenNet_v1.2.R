@@ -24,7 +24,7 @@ suppressMessages(library(googlesheets4))
 suppressMessages(library(stringr))
 suppressMessages(library(harmony))
 library(doParallel)
-options(future.globals.maxSize= 891289600)
+options(future.globals.maxSize= 1610612736) #1.5Gb
 
 ############## FUNCTIONS #####################
 
