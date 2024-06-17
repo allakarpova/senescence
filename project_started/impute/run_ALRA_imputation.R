@@ -16,21 +16,6 @@ option_list = list(
               type="character",
               default="./", 
               help="output folder path",
-              metavar="character"),
-  make_option(c("-e", "--extra"),
-              type="character",
-              default="foo",
-              help="add unique string identifier for your data",
-              metavar="character"),
-  make_option(c("-m","--metadata"),
-              type="character",
-              default='/diskmnt/Projects/HTAN_analysis_2/BRCA/Analyses/Alla/DCIS_project/cell_typing/st_obj/',
-              help = "path to metadats file with cell types, make cell barcodes in the 1st column",
-              metavar="character"),
-  make_option(c("-r","--reduction"),
-              type="character",
-              default='wnn.umap',
-              help = "wnn.umap or umap",
               metavar="character")
   
 );
