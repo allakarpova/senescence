@@ -4,6 +4,7 @@ suppressMessages(library(tidyverse))
 suppressMessages(library(data.table))
 suppressMessages(library(RColorBrewer))
 suppressMessages(library(readxl))
+suppressMessages(library(optparse))
 library(SeuratWrappers)
 
 option_list = list(
