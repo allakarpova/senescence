@@ -52,7 +52,6 @@ panc <- readRDS(input.path)
 DefaultAssay(panc) <- 'SCT'
 panc <- RunALRA(panc)
 
-input.path <- '/diskmnt/Projects/SenNet_analysis/Main.analysis/clinical_data/Cohorts_SenNet_mCRC_full_clinical_v9.xlsx'
 base.name <- tools::file_path_sans_ext(basename(input.path))
 saveRDS(panc, paste0(base.name, '.imputed.rds'))
 
