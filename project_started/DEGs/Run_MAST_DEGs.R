@@ -69,7 +69,8 @@ plan("multicore", workers = 4)
 options(future.globals.maxSize = 100 * 1024 ^ 3)
 
 if(!is.null(meta.path)) {
-  meta <- fread(meta.path) %>% data.frame(row.names = 1) %>%
+  meta <- fread(meta.path, header = TRUE) %>% 
+    column_to_rownames('V1') %>%
     dplyr::select(all_of(cell_column))
   panc <- AddMetaData(panc, meta)
   
