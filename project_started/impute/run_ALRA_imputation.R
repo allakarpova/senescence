@@ -38,6 +38,14 @@ panc <- readRDS(input.path)
 DefaultAssay(panc) <- 'SCT'
 panc <- RunALRA(panc)
 
+panc <- panc %>% 
+  FindVariableFeatures(assay = 'alra') %>%
+  ScaleData() %>%
+  RunPCA(assay = 'alra', reduction.name = 'pca.alra') %>%
+  RunUMAP( dims = 1:30, assay = 'alra', reduction = 'pca.alra', 
+           reduction.name = "umap.alra", 
+           reduction.key = "alraUMAP_", verbose = F) 
+
 base.name <- tools::file_path_sans_ext(basename(input.path))
 saveRDS(panc, paste0(base.name, '.imputed.rds'))
 
