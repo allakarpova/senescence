@@ -236,7 +236,36 @@ sq.gr.co_occurrence(
     n_jobs = 30
 )
 
+## save co_occurence calculation results
+celltypes = adata_mine.obs.celltype_final.unique()
+print(sorted(celltypes))
+sorted_celltypes = sorted(celltypes)
 
+distance_measure_point = list(adata_mine.uns["celltype_final_co_occurrence"]["interval"])
+
+occur_prob_tup = tuple(el for el in adata_mine.uns["celltype_final_co_occurrence"]["occ"])
+occur_prob_2d = np.row_stack(occur_prob_tup)
+print(occur_prob_2d.shape)
+# np.row_stack()
+
+## convert to df
+df = pd.DataFrame(occur_prob_2d)
+df.columns = ["V" + str(el) for el in distance_measure_point][0:-1]
+print(df.columns)
+## add column with "celltype of interest"
+x=[]
+[x.extend([str(el)]*int(df.shape[0]**0.5)) for el in sorted_celltypes]
+
+#
+df["celltype"] = x
+
+## add column with "neighbor_type"
+y=sorted_celltypes*len(sorted_celltypes)
+## add 
+df["neighbor_type"] = y
+
+## save
+df.to_csv('co_occurence_2d_mat.tsv', sep="\t", index = False, header = True)
 
 ## Plot co-occurence probability
 
