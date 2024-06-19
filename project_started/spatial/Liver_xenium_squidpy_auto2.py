@@ -247,7 +247,7 @@ for Type in addmeta.celltype_final.unique():
             adata_subsample,
             cluster_key="celltype_final",
             clusters=Type,
-            figsize=(8, 6),
+            figsize=(8, 10),
         )
         #
         plt.savefig(Type + "_cooccur_prob.pdf")
