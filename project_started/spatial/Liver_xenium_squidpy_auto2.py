@@ -237,13 +237,13 @@ sq.gr.co_occurrence(
 )
 
 ## save co_occurence calculation results
-celltypes = adata_mine.obs.celltype_final.unique()
+celltypes = adata_subsample.obs.celltype_final.unique()
 print(sorted(celltypes))
 sorted_celltypes = sorted(celltypes)
 
-distance_measure_point = list(adata_mine.uns["celltype_final_co_occurrence"]["interval"])
+distance_measure_point = list(adata_subsample.uns["celltype_final"]["interval"])
 
-occur_prob_tup = tuple(el for el in adata_mine.uns["celltype_final_co_occurrence"]["occ"])
+occur_prob_tup = tuple(el for el in adata_subsample.uns["celltype_final"]["occ"])
 occur_prob_2d = np.row_stack(occur_prob_tup)
 print(occur_prob_2d.shape)
 # np.row_stack()
