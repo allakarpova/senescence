@@ -228,44 +228,48 @@ setwd(out_path)
 select <- dplyr::select
 filter <- dplyr::filter
 
-my.metadata <- fread(meta.path, data.table = F, header = TRUE) %>% 
-  column_to_rownames('V1') 
-
-panc.my <- readRDS(input.path)
-panc.my <- AddMetaData(panc.my, my.metadata)
-
-relevant.patients <- panc.my@meta.data %>% pull(Patient_ID) %>% unique()
-
-tumor.panc <- readRDS('/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_mCRC_snRNA_2/30_Merged_normalized_mCRC_snRNA.rds')
-
-set.seed(666)
-
-cells.toadd <- tumor.panc@meta.data %>% 
-  filter(Patient_ID %in% relevant.patients) %>%
-  filter(merged_cell_type == 'Tumor') %>%
-  dplyr::sample_n(size=5000) %>%
-  rownames(.)
-
-tumor.panc.5k <- subset(tumor.panc, cells = cells.toadd)
-tumor.panc.5k@meta.data[[cell_column]] <- 'Tumor'
-
-common.columns <- intersect(colnames(tumor.panc.5k@meta.data), colnames(panc.my@meta.data))
-tumor.panc.5k@meta.data <- tumor.panc.5k@meta.data[,common.columns]
-
-
-int.sub <- merge(panc.my, tumor.panc.5k)
-
-print(dim(int.sub))
-
-
 if(!file.exists(paste0(add_filename,".rds"))) {
- 
+  my.metadata <- fread(meta.path, data.table = F, header = TRUE) %>% 
+    column_to_rownames('V1') 
+  
+  panc.my <- readRDS(input.path)
+  panc.my <- AddMetaData(panc.my, my.metadata)
+  
+  relevant.patients <- panc.my@meta.data %>% pull(Patient_ID) %>% unique()
+  
+  tumor.panc <- readRDS('/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_mCRC_snRNA_2/30_Merged_normalized_mCRC_snRNA.rds')
+  
+  set.seed(666)
+  
+  cells.toadd <- tumor.panc@meta.data %>% 
+    filter(Patient_ID %in% relevant.patients) %>%
+    filter(merged_cell_type == 'Tumor') %>%
+    dplyr::sample_n(size=5000) %>%
+    rownames(.)
+  
+  tumor.panc.5k <- subset(tumor.panc, cells = cells.toadd)
+  tumor.panc.5k@meta.data[[cell_column]] <- 'Tumor'
+  
+  common.columns <- intersect(colnames(tumor.panc.5k@meta.data), colnames(panc.my@meta.data))
+  tumor.panc.5k@meta.data <- tumor.panc.5k@meta.data[,common.columns]
+  
+  
+  int.sub <- merge(panc.my, tumor.panc.5k)
+  
+  print(dim(int.sub))
+
   int.sub <- NormalizeRNA(int.sub)
   
   saveRDS(int.sub,  paste0(add_filename,".rds"))
   
+  fwrite(int.sub@meta.data,  paste0(add_filename,".metadata.tsv"), sep='\t', row.names = TRUE)
   DimPlot(int.sub, group.by = cell_column, label = TRUE)
-  ggsave(paste0('Dimplot_', cell_column,'.pdf'), width = 8, height = 5, useDingbats = F)
+  ggsave(paste0('Dimplot_', cell_column,'.pdf'), width = 15, height = 5, useDingbats = F)
+} else {
+  int.sub <- readRDS(paste0(add_filename,".rds"))
+  fwrite(int.sub@meta.data,  paste0(add_filename,".metadata.tsv"), sep='\t', row.names = TRUE)
+  DimPlot(int.sub, group.by = cell_column, label = TRUE)
+  ggsave(paste0('Dimplot_', cell_column,'.pdf'), width = 15, height = 5, useDingbats = F)
 }
   
 
@@ -275,39 +279,6 @@ if(!file.exists(paste0(add_filename,".rds"))) {
 
 
 
-
-
-
-
-cell.types.oi <- c('LSECs|Portal endo', 'stellate|fibroblasts','LSECs',
-                   'Pericytes', 'Hepatocytes', 'Cholangiocytes', 
-                   'Noninflammatory macs','Inflammatory macs',  'macs',
-                   'Mesothelial cells')
-
-#cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
-#cell.types.touse <- intersect(cell.types.oi, cell.types.in.object)
-#print(cell.types.touse)
-
-print(dim(panc.my))
-
-
-cell.types.oi %>% walk (function(ct) {
-  print(make.names(ct))
-  if(!file.exists(paste0(add_filename,"_",make.names(ct), ".rds"))) {
-    print(ct)
-    int.sub <- subset(x = panc.my, 
-                      cells = rownames(dplyr::filter(panc.my@meta.data, 
-                                                     grepl(ct, .data[[cell_column]])
-                      )
-                      )
-    )
-    print(dim(int.sub))
-    int.sub <- NormalizeRNA(int.sub)
-    
-    saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".rds"))
-  }
-  
-})
 
 
 
