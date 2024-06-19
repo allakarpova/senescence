@@ -176,6 +176,7 @@ if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filenam
 
   combined <- combined %>%
     SCTransform(
+      ncells = 20000,
       assay = 'Xenium',
       return.only.var.genes = TRUE, 
       verbose = T) %>%
