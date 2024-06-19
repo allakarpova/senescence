@@ -262,20 +262,23 @@ if(!file.exists(paste0(add_filename,".rds"))) {
   
   saveRDS(int.sub,  paste0(add_filename,".rds"))
   
-  fwrite(int.sub@meta.data,  paste0(add_filename,".metadata.tsv"), sep='\t', row.names = TRUE)
-  DimPlot(int.sub, group.by = cell_column, label = TRUE)
-  ggsave(paste0('Dimplot_', cell_column,'.pdf'), width = 15, height = 5, useDingbats = F)
+  
 } else {
   int.sub <- readRDS(paste0(add_filename,".rds"))
-  fwrite(int.sub@meta.data,  paste0(add_filename,".metadata.tsv"), sep='\t', row.names = TRUE)
-  DimPlot(int.sub, group.by = cell_column, label = TRUE)
-  ggsave(paste0('Dimplot_', cell_column,'.pdf'), width = 15, height = 5, useDingbats = F)
+  
 }
   
 
+int.sub@meta.data <- int.sub@meta.datamutate(cell_type_broad = case_when(grepl('Hepatocytes', cell_type_sen_mCRC) ~ 'Hepatocytes',
+                                   grepl('fibroblas', cell_type_sen_mCRC) ~ 'Portal fibroblasts',
+                                   grepl('HSC', cell_type_sen_mCRC) ~ 'Hepatic stellate cells',
+                                   grepl('PS LSEC', cell_type_sen_mCRC) ~ 'Mid lobular LSECs',
+                                   grepl('Cholangiocytes', cell_type_sen_mCRC) ~ 'Cholangiocytes',
+                                   TRUE ~ cell_type_sen_mCRC))
 
-
-
+fwrite(int.sub@meta.data,  paste0(add_filename,".metadata.tsv"), sep='\t', row.names = TRUE)
+DimPlot(int.sub, group.by = cell_column, label = TRUE)
+ggsave(paste0('Dimplot_', cell_column,'.pdf'), width = 15, height = 5, useDingbats = F)
 
 
 
