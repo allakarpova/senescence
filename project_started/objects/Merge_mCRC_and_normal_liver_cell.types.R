@@ -88,9 +88,8 @@ runHarmonyNormalization <- function(obj, dims=30, column = 'Patient_ID') {
   obj <- obj %>%
     RunHarmony(column, reduction = 'pca', assay.use = 'SCT') %>%
     FindNeighbors(reduction = "harmony", dims = 1:dims) %>%
-    FindClusters(verbose = FALSE, resolution = 1.2, 
-                 algorithm = 4,
-                 method='igraph') %>%
+    FindClusters(verbose = FALSE, resolution = 1, 
+                 algorithm = 1) %>%
     RunUMAP(reduction = "harmony",reduction.name = 'umap.harmony', reduction.key = 'harmonyUMAP_',  dims = 1:dims)
   
   return(obj)
