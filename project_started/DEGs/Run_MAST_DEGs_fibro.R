@@ -81,7 +81,7 @@ deg1 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS fibroblasts CDKN1A CCL2',
          ident.1 = 'PS fibroblasts CDKN1A CCL2',
          ident.2 = 'Portal fibroblasts')
 
-deg2 <- FindMarkers(panc, assay = "RNA", ident.1 = 'Portal fibroblasts',
+deg2 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS fibroblasts CDKN1A CCL2',
                     ident.2 = c('Activated HSCs', "Activating HSCs", 'Quiescent HSCs'),
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
