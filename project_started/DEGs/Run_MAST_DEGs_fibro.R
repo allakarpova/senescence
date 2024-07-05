@@ -43,7 +43,7 @@ opt_parser = OptionParser(option_list=option_list);
 opt = parse_args(opt_parser)
 
 # read in initial arguments
-input.path <- '/diskmnt/Projects/SenNet_analysis/Main.analysis/data_freeze/v1.1/RNA_only/each_cell_type_harmony/37_Merged_normalized_liver_snRNA_no_doublets_Hepatocytes_harmony.rds'
+input.path <- '/diskmnt/Projects/SenNet_analysis/Main.analysis/data_freeze/v1.1/RNA_only/each_cell_type_harmony/37_Merged_normalized_liver_snRNA_no_doublets_PF_HSC_NoVSMC.rds'
 out_path <- opt$output
 add_filename <- 'Hepatocytes'
 meta.path <- opt$metadata
