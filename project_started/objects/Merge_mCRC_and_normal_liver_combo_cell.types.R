@@ -165,6 +165,10 @@ pwalk(list(obj.paths$Cell_type, obj.paths$liver, obj.paths$mCRC), function(ct, l
   obj1@meta.data$Cohort <- 'Normal liver'
   obj2@meta.data$Cohort <- 'mCRC liver'
   
+  DefaultAssay(obj1) <- 'RNA'
+  obj1 <- DietSeurat(obj1, assays = c('RNA', 'ATAC_merged'))
+  DefaultAssay(obj2) <- 'RNA'
+  obj2 <- DietSeurat(obj2, assays = c('RNA', 'ATAC_merged'))
   int.sub <- merge(obj1, obj2)
   
   print(dim(int.sub))
