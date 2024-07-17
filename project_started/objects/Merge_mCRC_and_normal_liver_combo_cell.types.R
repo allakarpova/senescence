@@ -187,6 +187,7 @@ pwalk(list(obj.paths$Cell_type, obj.paths$liver, obj.paths$mCRC), function(ct, l
   int.sub <- runAllChromvar(int.sub)
   saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".chromvar.rds"))
   
+  int.sub@meta.data %>% fwrite(paste0(add_filename,"_",make.names(ct), ".metadata.tsv"), sep='\t', row.names = TRUE)
 })
 
 
