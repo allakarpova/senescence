@@ -108,7 +108,8 @@ select <- dplyr::select
 filter <- dplyr::filter
 
 obj.paths <- read_sheet("https://docs.google.com/spreadsheets/d/1VeWme__vvVHAhHaQB3wCvAGuq-w3WrhZ5cT-7Mh7Sr0/edit#gid=0", 
-                         sheet = "liver_mCRC_cell_type_obj")
+                         sheet = "liver_mCRC_cell_type_obj")%>%
+  filter(datatype=='RNA')
 
 pwalk(list(obj.paths$Cell_type, obj.paths$liver, obj.paths$mCRC), function(ct, l.path, m.path) {
   obj1 <- readRDS(l.path)
