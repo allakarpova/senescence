@@ -237,7 +237,10 @@ obj.paths <- read_sheet("https://docs.google.com/spreadsheets/d/1VeWme__vvVHAhHa
                         sheet = "liver_mCRC_cell_type_obj") %>%
     filter(datatype=='combo', Cell_type=='All')
 
-pwalk(list(obj.paths$Cell_type, obj.paths$liver, obj.paths$mCRC), function(ct, l.path, m.path) {
+#pwalk(list(obj.paths$Cell_type, obj.paths$liver, obj.paths$mCRC), function(ct, l.path, m.path) {
+  ct='All'
+  l.path=obj.paths$liver
+  m.path=obj.paths$mCRC
   obj1 <- readRDS(l.path)
   obj2 <- readRDS(m.path)
   
@@ -333,7 +336,7 @@ pwalk(list(obj.paths$Cell_type, obj.paths$liver, obj.paths$mCRC), function(ct, l
   saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".chromvar.rds"))
   
   int.sub@meta.data %>% fwrite(paste0(add_filename,"_",make.names(ct), ".metadata.tsv"), sep='\t', row.names = TRUE)
-})
+#})
 
 
 
