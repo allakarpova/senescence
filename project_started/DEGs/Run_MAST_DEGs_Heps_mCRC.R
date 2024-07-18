@@ -111,7 +111,7 @@ fwrite(rbind(deg1, deg2, deg3, deg4), paste0('DEG_findMarkers_PS_Heps_RNA_MAST.t
 
 deg1 <- FindMarkers(panc, assay = "RNA", subset.ident = 'PS Hepatocytes CDKN1A SERPINE1',
                     group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
-                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
+                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.0,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
         celltype = 'PS Hepatocytes CDKN1A SERPINE1',
@@ -120,7 +120,7 @@ deg1 <- FindMarkers(panc, assay = "RNA", subset.ident = 'PS Hepatocytes CDKN1A S
 
 deg2 <- FindMarkers(panc, assay = "RNA", subset.ident = 'PS Hepatocytes CDKN1A',
                     group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
-                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
+                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.0,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
          celltype = 'PS Hepatocytes CDKN1A',
@@ -129,7 +129,7 @@ deg2 <- FindMarkers(panc, assay = "RNA", subset.ident = 'PS Hepatocytes CDKN1A',
 
 deg3 <- FindMarkers(panc, assay = "RNA", subset.ident = 'Hepatocytes CRP',
                     group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
-                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
+                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.0,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
          celltype = 'Hepatocytes CRP',
@@ -138,7 +138,7 @@ deg3 <- FindMarkers(panc, assay = "RNA", subset.ident = 'Hepatocytes CRP',
 
 deg4 <- FindMarkers(panc, assay = "RNA", subset.ident = "PS Hepatocytes CDKN2A/2B",
                     group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
-                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
+                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.0,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
          celltype = "PS Hepatocytes CDKN2A/2B",
