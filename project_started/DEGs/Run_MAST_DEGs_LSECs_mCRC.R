@@ -43,7 +43,7 @@ opt_parser = OptionParser(option_list=option_list);
 opt = parse_args(opt_parser)
 
 # read in initial arguments
-input.path <- '/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_SenNet_mCRC_snRNA_2/37_liver_18_mCRC_snRNA_Cholangiocytes_harmony.rds'
+input.path <- '/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_SenNet_mCRC_snRNA_2/37_liver_18_mCRC_snRNA_Endothelial_harmony.rds'
 out_path <- opt$output
 add_filename <- 'Fibroblasts'
 meta.path <- opt$metadata
