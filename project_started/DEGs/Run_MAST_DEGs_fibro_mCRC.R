@@ -89,6 +89,14 @@ deg2 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS fibroblasts CDKN1A CCL2',
          ident.1 = 'PS fibroblasts CDKN1A CCL2',
          ident.2 = 'HSCs')
 
+deg3 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS fibroblasts CDKN1A CCL2',
+                    ident.2 = 'PS tumor fibroblasts CDKN1A SERPINE1',
+                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
+                    test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
+  mutate(gene=rownames(.),
+         ident.1 = "PS fibroblasts CDKN1A CCL2",
+         ident.2 = "PS tumor fibroblasts CDKN1A SERPINE1")
+
 
 deg4 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS tumor fibroblasts CDKN2A/2B',
                     ident.2 = 'PS tumor fibroblasts CDKN1A SERPINE1',
@@ -98,7 +106,24 @@ deg4 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS tumor fibroblasts CDKN2A/
          ident.1 = "PS tumor fibroblasts CDKN2A/2B",
          ident.2 = "PS tumor fibroblasts CDKN1A SERPINE1")
 
-fwrite(rbind(deg1, deg2, deg4), paste0('DEG_findMarkers_PS_fibros_RNA_MAST.txt'), sep = '\t', row.names = F)
+deg5 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS tumor fibroblasts CDKN2A/2B',
+                    ident.2 = 'Tumor fibroblasts',
+                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
+                    test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
+  mutate(gene=rownames(.),
+         ident.1 = "PS tumor fibroblasts CDKN2A/2B",
+         ident.2 = "Tumor fibroblasts")
+
+deg6 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS tumor fibroblasts CDKN1A SERPINE1',
+                    ident.2 = 'Tumor fibroblasts',
+                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
+                    test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
+  mutate(gene=rownames(.),
+         ident.1 = "PS tumor fibroblasts CDKN1A SERPINE1",
+         ident.2 = "Tumor fibroblasts")
+
+
+fwrite(rbind(deg1, deg2, deg3, deg4, deg5,deg6), paste0('DEG_findMarkers_PS_fibros_RNA_MAST.txt'), sep = '\t', row.names = F)
 
 
 deg1 <- FindMarkers(panc, assay = "RNA", subset.ident = 'PS fibroblasts CDKN1A CCL2',
