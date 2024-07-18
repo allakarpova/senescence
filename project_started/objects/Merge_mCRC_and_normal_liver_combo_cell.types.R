@@ -25,7 +25,7 @@ suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 
 suppressMessages(library(googlesheets4))
 suppressMessages(library(stringr))
-#suppressMessages(library(doParallel))
+suppressMessages(library(doParallel))
 suppressMessages(library(harmony))
 suppressMessages(library(googlesheets4))
 gs4_deauth()
