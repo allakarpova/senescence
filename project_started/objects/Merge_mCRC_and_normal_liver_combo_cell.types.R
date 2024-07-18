@@ -262,6 +262,7 @@ pwalk(list(obj.paths$Cell_type, obj.paths$liver, obj.paths$mCRC), function(ct, l
   dir.create('peaks')
   
   samples.id <- c(unique(obj1$Sample), unique(obj2$Sample))
+  print(samples.id)
   
   all_peaks <- rbindlist(list(obj1.peaks, obj2.peaks.filt))
   all_peaks <- all_peaks[order(score.norm, decreasing = T), ] # order peaks by normalized scores, this is essential for filtering out overlapping peaks
