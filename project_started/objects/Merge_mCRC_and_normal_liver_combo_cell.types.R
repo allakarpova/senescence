@@ -141,6 +141,85 @@ runAllChromvar <- function(obj, assay = 'ATAC_merged') {
   return(obj)
 }
 
+iterative_removal <- function(all_peaks.f) {
+  #print(cancer.type)
+  #all_peaks.f <- all_peaks.f[order(score.norm, decreasing = T), ]
+  #just load existing peaks if any
+  if (file.exists(paste0('peaks/',length(samples.id),'_recentered_final.',add_filename,'.tsv'))) {
+    recentered_final.f <- fread(paste0('peaks/',length(samples.id),'_recentered_final.',add_filename,'.tsv'))
+  } else {
+    
+    recentered_p=StringToGRanges(regions = all_peaks.f$new_peak, sep = c("-", "-"))
+    
+    cat(paste0('finding overlapping peaks \n'))
+    overlapping=as.data.table(x = findOverlaps(query = recentered_p, 
+                                               subject = recentered_p)) # find which peaks overlap
+    overlapping=overlapping[queryHits!=subjectHits,]
+    overlapping.peak.number <- unique(x = overlapping$queryHits) #these are numbers of overlapping peaks that denote their position in all_peaks.f table
+    recentered_non_overlapping=all_peaks.f[-overlapping.peak.number,] # select peaks that are not overlapping as non-overlapping peaks
+    fwrite(recentered_non_overlapping,paste0('peaks/',length(samples.id),'_recentered_nonOverlapping.',add_filename,'.tsv'),
+           sep='\t',row.names=FALSE)
+    if (length(overlapping.peak.number)>0) {
+      tmp <- data.table(chr = all_peaks.f$seqnames[overlapping.peak.number], 
+                        num = overlapping.peak.number)
+      overlapping.peak.number.split <- split(tmp, by = 'chr', keep.by = T) #split peaks by chromosome 
+      registerDoParallel(cores=25)
+      #this is where iterative removal of peaks is done
+      best_in_overlapping_num <- foreach(peak.numbers=overlapping.peak.number.split) %dopar% {
+        cat('removing overlapping peaks in each chromosome\n')
+        iterative_removal_core (peak.numbers = peak.numbers, overlapping.f = overlapping)
+      }
+      stopImplicitCluster()
+      best_in_overlapping_num <- do.call('c', best_in_overlapping_num) #combine best peak numbers from all chromosomes
+      best_in_overlapping_cancer <- all_peaks.f[best_in_overlapping_num,] #extract peaks themselves
+      fwrite(best_in_overlapping_cancer,paste0('peaks/',length(samples.id),'_recentered_Overlapping.',add_filename,'.tsv'),
+             sep='\t',row.names=FALSE)
+      recentered_final.f=rbindlist(list(recentered_non_overlapping,best_in_overlapping_cancer))
+    } else {
+      recentered_final.f=recentered_non_overlapping
+    }
+    final.overlaps <-  recentered_final.f$new_peak %>% 
+      unique %>% 
+      StringToGRanges %>% 
+      countOverlaps
+    if (sum(final.overlaps>1)>0) {
+      stop("Execution stopped. Overlapping peaks remained")
+    }
+    
+  }
+  return(recentered_final.f)
+}
+
+# this works like a charm
+iterative_removal_core <- function(peak.numbers, overlapping.f) {
+  chr = peak.numbers$chr[1]
+  running.vector <- peak.numbers$num
+  peaks.to.trash <- NULL
+  peaks.to.keep <- NULL
+  while (length(running.vector) != 0) {
+    n <- running.vector[1] # this is the first and the best peak since peaks are sorted by scores
+    neighbor.peaks.num.discard <- overlapping.f[queryHits==n, subjectHits] #find positions of other peaks overlapping with the first one 
+    running.vector <- setdiff(running.vector, neighbor.peaks.num.discard) # remove them from the list of peaks
+    running.vector <- setdiff(running.vector, n)
+    peaks.to.keep <- c(peaks.to.keep, n) # add this peak to the keeping list
+    peaks.to.trash <- unique(c(peaks.to.trash, neighbor.peaks.num.discard)) # add neighbors to the list of peaks to discard
+  }
+  cat('done\n')
+  return(peaks.to.keep)
+}
+
+getFeatureMatrix <- function (obj, peaks, pro_n, assay.towork.f) {
+  frag <- Fragments(obj[[assay.towork.f]])
+  cat('Making a large count matrix...\n')
+  matrix.counts <- FeatureMatrix(
+    fragments = frag,
+    features = peaks,
+    process_n = pro_n,
+    sep = c("-","-"),
+    cells = colnames(obj)
+  )
+  return(matrix.counts)
+}
 
 
 # read in initial arguments
@@ -156,23 +235,84 @@ filter <- dplyr::filter
 
 obj.paths <- read_sheet("https://docs.google.com/spreadsheets/d/1VeWme__vvVHAhHaQB3wCvAGuq-w3WrhZ5cT-7Mh7Sr0/edit#gid=0", 
                         sheet = "liver_mCRC_cell_type_obj") %>%
-    filter(datatype=='combo')
+    filter(datatype=='combo', Cell_type=='All')
 
 pwalk(list(obj.paths$Cell_type, obj.paths$liver, obj.paths$mCRC), function(ct, l.path, m.path) {
   obj1 <- readRDS(l.path)
   obj2 <- readRDS(m.path)
   
+  obj1.peaks <- fread('/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_liver_combo_9/peaks/34_recentered_final.liver_combo.tsv', header = TRUE)
+  obj2.peaks <- fread('/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_mCRC_combo_2/peaks/26_recentered_final.liver_combo.tsv', header = TRUE)
+  
   obj1@meta.data$Cohort <- 'Normal liver'
   obj2@meta.data$Cohort <- 'mCRC liver'
-  
   DefaultAssay(obj1) <- 'RNA'
   obj1 <- DietSeurat(obj1, assays = c('RNA', 'ATAC_merged'))
   DefaultAssay(obj2) <- 'RNA'
   obj2 <- DietSeurat(obj2, assays = c('RNA', 'ATAC_merged'))
-  int.sub <- merge(obj1, obj2)
+  
+  obj <- list(obj1, obj2)
+  
+  DefaultAssay(obj2) <- 'ATAC_merged'
+  peaks.tokeep <- AccessiblePeaks(obj2, min.cells = 10)
+  dim(obj2.peaks)
+  obj2.peaks.filt <- filter(obj2.peaks, new_peak %in% peaks.tokeep) # trying to remove cancer specific peaks
+  dim(obj2.peaks.filt)
+  
+  dir.create('peaks')
+  
+  samples.id <- c(unique(obj1$Sample), unique(obj2$Sample))
+  
+  all_peaks <- rbindlist(list(obj1.peaks, obj2.peaks.filt))
+  all_peaks <- all_peaks[order(score.norm, decreasing = T), ] # order peaks by normalized scores, this is essential for filtering out overlapping peaks
+  fwrite(all_peaks, paste0('peaks/',length(samples.id),"_sample_MACS2_peaks_",add_filename,".tsv"),
+         sep='\t',row.names=FALSE)
+  
+  recentered_final <- iterative_removal(all_peaks)
+  
+  fwrite(recentered_final, paste0('peaks/',length(samples.id),'_recentered_final.',add_filename,'.tsv'),sep='\t',
+         row.names=FALSE)
+  recentered_p=StringToGRanges(unique(recentered_final$new_peak), sep = c("-", "-"))
+  
+  plan("multicore", workers = 20)
+  options(future.globals.maxSize = 250 * 1024^3) # for 250 Gb RAM
+  
+  peak.number <- length(unique(recentered_final$new_peak))
+  n.peaks <- round(peak.number/20)
+  
+  matrix.counts <- map (obj, ~getFeatureMatrix(.x, recentered_p, n.peaks, 'ATAC_merged'))
+  
+  registerDoParallel(cores=10)
+  cat ('creating assays on common peaks\n')
+  obj <- foreach (obj = obj, co = matrix.counts, .combine=c) %dopar% {
+    DefaultAssay(obj) <- 'RNA'
+    frag = Fragments(obj[['ATAC_merged']])
+    obj[['ATAC_merged']] <- NULL
+    obj[['ATAC_merged']] <- CreateChromatinAssay(counts = co,
+                                                 fragments=frag, 
+                                                 min.cells = -1, 
+                                                 min.features = -1)
+    
+    return(obj)
+  }
+  stopImplicitCluster()
+  
+  
+  int.sub <- merge(obj[[1]], obj[[2]])
+  
+  # add metadata
+  ifelse('passed_filters' %in% colnames(int.sub@meta.data),
+         total_fragments_cell <- int.sub$passed_filters, 
+         total_fragments_cell <- int.sub$atac_fragments)
+  
+  peak.counts <- colSums(x = GetAssayData(int.sub, slot = 'counts'))
+  frip <- peak.counts *100 / total_fragments_cell
+  int.sub <- AddMetaData(object = int.sub, metadata = frip, col.name = 'pct_read_in_peaks_ATAC_merged')
+  int.sub <- AddMetaData(object = int.sub, metadata = peak.counts, col.name = 'peak_region_fragments_ATAC_merged')
+  
   
   print(dim(int.sub))
-  int.sub <- runAllNormalization(int.sub, assay = assay.towork)
+  int.sub <- runAllNormalization(int.sub, assay =  'ATAC_merged')
   
   
   saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".rds"))
