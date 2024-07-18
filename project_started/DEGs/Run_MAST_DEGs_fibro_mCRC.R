@@ -43,9 +43,9 @@ opt_parser = OptionParser(option_list=option_list);
 opt = parse_args(opt_parser)
 
 # read in initial arguments
-input.path <- '/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_SenNet_mCRC_snRNA_2/37_liver_18_mCRC_snRNA_Hepatocytes_harmony.rds'
+input.path <- '/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_SenNet_mCRC_snRNA_2/37_liver_18_mCRC_snRNA_Fibroblasts_harmony.rds'
 out_path <- opt$output
-add_filename <- 'Hepatocytes'
+add_filename <- 'Fibroblasts'
 meta.path <- opt$metadata
 cell_column <- opt$cell_type_column
 
@@ -73,75 +73,67 @@ DefaultAssay(panc) <- 'RNA'
 unique(Idents(panc))
 
 
-deg1 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS Hepatocytes CDKN1A SERPINE1',
-                    ident.2 = 'Hepatocytes',
+deg1 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS fibroblasts CDKN1A CCL2',
+                    ident.2 = 'Portal fibroblasts',
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-         ident.1 = 'PS Hepatocytes CDKN1A SERPINE1',
-         ident.2 = 'Hepatocytes')
+         ident.1 = 'PS fibroblasts CDKN1A CCL2',
+         ident.2 = 'Portal fibroblasts')
 
-deg2 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS Hepatocytes CDKN1A',
-                    ident.2 = 'Hepatocytes',
+deg2 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS fibroblasts CDKN1A CCL2',
+                    ident.2 = c('Activated HSCs', "Activating HSCs", 'Quiescent HSCs'),
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-         ident.1 = 'PS Hepatocytes CDKN1A',
-         ident.2 = 'Hepatocytes')
+         ident.1 = 'PS fibroblasts CDKN1A CCL2',
+         ident.2 = 'HSCs')
 
-deg3 <- FindMarkers(panc, assay = "RNA", ident.1 = 'Hepatocytes CRP',
-                    ident.2 = 'Hepatocytes',
+
+deg4 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS tumor fibroblasts CDKN2A/2B',
+                    ident.2 = 'PS tumor fibroblasts CDKN1A SERPINE1',
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-         ident.1 = 'Hepatocytes CRP',
-         ident.2 = 'Hepatocytes')
+         ident.1 = "PS tumor fibroblasts CDKN2A/2B",
+         ident.2 = "PS tumor fibroblasts CDKN1A SERPINE1")
+
+fwrite(rbind(deg1, deg2, deg4), paste0('DEG_findMarkers_PS_fibros_RNA_MAST.txt'), sep = '\t', row.names = F)
 
 
-deg4 <- FindMarkers(panc, assay = "RNA", ident.1 = "PS Hepatocytes CDKN2A/2B",
-                    ident.2 = 'Hepatocytes',
-                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
-                    test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
-  mutate(gene=rownames(.),
-         ident.1 = "PS Hepatocytes CDKN2A/2B",
-         ident.2 = 'Hepatocytes')
-
-fwrite(rbind(deg1, deg2, deg3, deg4), paste0('DEG_findMarkers_PS_Heps_RNA_MAST.txt'), sep = '\t', row.names = F)
-
-
-deg1 <- FindMarkers(panc, assay = "RNA", subset.ident = 'PS Hepatocytes CDKN1A SERPINE1',
+deg1 <- FindMarkers(panc, assay = "RNA", subset.ident = 'PS fibroblasts CDKN1A CCL2',
                     group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-        celltype = 'PS Hepatocytes CDKN1A SERPINE1',
+         celltype = 'PS fibroblasts CDKN1A CCL2',
          ident.1 = 'mCRC liver',
          ident.2 = 'Normal liver')
 
-deg2 <- FindMarkers(panc, assay = "RNA", subset.ident = 'PS Hepatocytes CDKN1A',
+deg2 <- FindMarkers(panc, assay = "RNA", subset.ident = 'Activated HSCs',
                     group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-         celltype = 'PS Hepatocytes CDKN1A',
+         celltype = 'Activated HSCs',
          ident.1 = 'mCRC liver',
          ident.2 = 'Normal liver')
 
-deg3 <- FindMarkers(panc, assay = "RNA", subset.ident = 'Hepatocytes CRP',
+deg3 <- FindMarkers(panc, assay = "RNA", subset.ident = 'Activating HSCs',
                     group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-         celltype = 'Hepatocytes CRP',
+         celltype = 'Activating HSCs',
          ident.1 = 'mCRC liver',
          ident.2 = 'Normal liver')
 
-deg4 <- FindMarkers(panc, assay = "RNA", subset.ident = "PS Hepatocytes CDKN2A/2B",
+deg4 <- FindMarkers(panc, assay = "RNA", subset.ident = "Quiescent HSCs",
                     group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-         celltype = "PS Hepatocytes CDKN2A/2B",
+         celltype = "Quiescent HSCs",
          ident.1 = 'mCRC liver',
          ident.2 = 'Normal liver')
-fwrite(rbind(deg1, deg2, deg3, deg4), paste0('DEG_findMarkers_mCRC_vs_normal_liver_PS_Heps_RNA_MAST.txt'), sep = '\t', row.names = F)
+fwrite(rbind(deg1, deg2, deg3, deg4), paste0('DEG_findMarkers_mCRC_vs_normal_liver_all_liver_fibro_RNA_MAST.txt'), sep = '\t', row.names = F)

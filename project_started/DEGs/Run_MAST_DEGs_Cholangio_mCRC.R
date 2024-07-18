@@ -43,9 +43,9 @@ opt_parser = OptionParser(option_list=option_list);
 opt = parse_args(opt_parser)
 
 # read in initial arguments
-input.path <- '/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_SenNet_mCRC_snRNA_2/37_liver_18_mCRC_snRNA_Hepatocytes_harmony.rds'
+input.path <- '/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_SenNet_mCRC_snRNA_2/37_liver_18_mCRC_snRNA_Cholangiocytes_harmony.rds'
 out_path <- opt$output
-add_filename <- 'Hepatocytes'
+add_filename <- 'Fibroblasts'
 meta.path <- opt$metadata
 cell_column <- opt$cell_type_column
 
@@ -73,75 +73,60 @@ DefaultAssay(panc) <- 'RNA'
 unique(Idents(panc))
 
 
-deg1 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS Hepatocytes CDKN1A SERPINE1',
-                    ident.2 = 'Hepatocytes',
+deg1 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS Cholangiocytes SASP',
+                    ident.2 = 'Cholangiocytes',
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-         ident.1 = 'PS Hepatocytes CDKN1A SERPINE1',
-         ident.2 = 'Hepatocytes')
+         ident.1 = 'PS Cholangiocytes SASP',
+         ident.2 = 'Cholangiocytes')
 
-deg2 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS Hepatocytes CDKN1A',
-                    ident.2 = 'Hepatocytes',
+deg2 <- FindMarkers(panc, assay = "RNA", ident.1 = 'PS Cholangiocytes IGFBPs',
+                    ident.2 = 'Cholangiocytes',
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-         ident.1 = 'PS Hepatocytes CDKN1A',
-         ident.2 = 'Hepatocytes')
+         ident.1 = 'PS Cholangiocytes IGFBPs',
+         ident.2 = 'Cholangiocytes')
 
-deg3 <- FindMarkers(panc, assay = "RNA", ident.1 = 'Hepatocytes CRP',
-                    ident.2 = 'Hepatocytes',
+
+deg4 <- FindMarkers(panc, assay = "RNA", ident.1 = "PS Cholangiocytes CDKN2A/2B",
+                    ident.2 = 'Cholangiocytes',
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-         ident.1 = 'Hepatocytes CRP',
-         ident.2 = 'Hepatocytes')
+         ident.1 = "PS Cholangiocytes CDKN2A/2B",
+         ident.2 = "Cholangiocytes")
+
+fwrite(rbind(deg1, deg2, deg4), paste0('DEG_findMarkers_PS_cholangio_RNA_MAST.txt'), sep = '\t', row.names = F)
 
 
-deg4 <- FindMarkers(panc, assay = "RNA", ident.1 = "PS Hepatocytes CDKN2A/2B",
-                    ident.2 = 'Hepatocytes',
-                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
-                    test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
-  mutate(gene=rownames(.),
-         ident.1 = "PS Hepatocytes CDKN2A/2B",
-         ident.2 = 'Hepatocytes')
-
-fwrite(rbind(deg1, deg2, deg3, deg4), paste0('DEG_findMarkers_PS_Heps_RNA_MAST.txt'), sep = '\t', row.names = F)
-
-
-deg1 <- FindMarkers(panc, assay = "RNA", subset.ident = 'PS Hepatocytes CDKN1A SERPINE1',
+deg1 <- FindMarkers(panc, assay = "RNA", subset.ident = 'PS Cholangiocytes SASP',
                     group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-        celltype = 'PS Hepatocytes CDKN1A SERPINE1',
+         celltype = 'PS Cholangiocytes SASP',
          ident.1 = 'mCRC liver',
          ident.2 = 'Normal liver')
 
-deg2 <- FindMarkers(panc, assay = "RNA", subset.ident = 'PS Hepatocytes CDKN1A',
+deg2 <- FindMarkers(panc, assay = "RNA", subset.ident = 'PS Cholangiocytes IGFBPs',
                     group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-         celltype = 'PS Hepatocytes CDKN1A',
+         celltype = 'PS Cholangiocytes IGFBPs',
          ident.1 = 'mCRC liver',
          ident.2 = 'Normal liver')
 
-deg3 <- FindMarkers(panc, assay = "RNA", subset.ident = 'Hepatocytes CRP',
+deg3 <- FindMarkers(panc, assay = "RNA", subset.ident = "PS Cholangiocytes CDKN2A/2B",
                     group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
-         celltype = 'Hepatocytes CRP',
+         celltype = "PS Cholangiocytes CDKN2A/2B",
          ident.1 = 'mCRC liver',
          ident.2 = 'Normal liver')
 
-deg4 <- FindMarkers(panc, assay = "RNA", subset.ident = "PS Hepatocytes CDKN2A/2B",
-                    group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
-                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
-                    test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
-  mutate(gene=rownames(.),
-         celltype = "PS Hepatocytes CDKN2A/2B",
-         ident.1 = 'mCRC liver',
-         ident.2 = 'Normal liver')
-fwrite(rbind(deg1, deg2, deg3, deg4), paste0('DEG_findMarkers_mCRC_vs_normal_liver_PS_Heps_RNA_MAST.txt'), sep = '\t', row.names = F)
+
+fwrite(rbind(deg1, deg2, deg3), paste0('DEG_findMarkers_mCRC_vs_normal_liver_PSCholangio_RNA_MAST.txt'), sep = '\t', row.names = F)
