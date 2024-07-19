@@ -17,7 +17,7 @@ set.seed(1234)
 suppressMessages(library(dplyr))
 suppressMessages(library(data.table))
 
-suppressMessages(library(EnsDb.Hsapiens.v86))
+suppressMessages(library(EnsDb.Hsapiens.v100))
 suppressMessages(library(GenomicRanges))
 suppressMessages(library(future))
 suppressMessages(library(optparse))
@@ -236,6 +236,7 @@ filter <- dplyr::filter
 obj.paths <- read_sheet("https://docs.google.com/spreadsheets/d/1VeWme__vvVHAhHaQB3wCvAGuq-w3WrhZ5cT-7Mh7Sr0/edit#gid=0", 
                         sheet = "liver_mCRC_cell_type_obj") %>%
     filter(datatype=='combo', Cell_type=='All')
+annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v100,  standard.chromosomes = TRUE)
 
 #pwalk(list(obj.paths$Cell_type, obj.paths$liver, obj.paths$mCRC), function(ct, l.path, m.path) {
   ct='All'
