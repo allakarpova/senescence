@@ -238,12 +238,9 @@ obj.paths <- read_sheet("https://docs.google.com/spreadsheets/d/1VeWme__vvVHAhHa
                         sheet = "liver_mCRC_cell_type_obj") %>%
     filter(datatype=='combo', Cell_type=='All')
 annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v100,  standard.chromosomes = TRUE)
+ct='All'
 
 if (!file.exists(paste0(add_filename,"_",make.names(ct), ".rds"))) {
-  
-
-#pwalk(list(obj.paths$Cell_type, obj.paths$liver, obj.paths$mCRC), function(ct, l.path, m.path) {
-  ct='All'
   l.path=obj.paths$liver
   m.path=obj.paths$mCRC
   obj1 <- readRDS(l.path)
