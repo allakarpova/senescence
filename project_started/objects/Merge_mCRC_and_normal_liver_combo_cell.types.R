@@ -19,6 +19,7 @@ suppressMessages(library(data.table))
 
 suppressMessages(library(EnsDb.Hsapiens.v100))
 suppressMessages(library(GenomicRanges))
+library(TFBSTools)
 suppressMessages(library(future))
 suppressMessages(library(optparse))
 suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
@@ -238,6 +239,9 @@ obj.paths <- read_sheet("https://docs.google.com/spreadsheets/d/1VeWme__vvVHAhHa
     filter(datatype=='combo', Cell_type=='All')
 annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v100,  standard.chromosomes = TRUE)
 
+if (!file.exists(paste0(add_filename,"_",make.names(ct), ".rds"))) {
+  
+
 #pwalk(list(obj.paths$Cell_type, obj.paths$liver, obj.paths$mCRC), function(ct, l.path, m.path) {
   ct='All'
   l.path=obj.paths$liver
@@ -322,6 +326,7 @@ annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v100,  standard.chromo
   
   saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".rds"))
   
+} else {
   ct <- make.names(ct)
   
   DimPlot(int.sub, reduction='wnn.umap', group.by = 'Patient_ID')
@@ -339,7 +344,7 @@ annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v100,  standard.chromo
   int.sub@meta.data %>% fwrite(paste0(add_filename,"_",make.names(ct), ".metadata.tsv"), sep='\t', row.names = TRUE)
 #})
 
-
+}
 
 
 
