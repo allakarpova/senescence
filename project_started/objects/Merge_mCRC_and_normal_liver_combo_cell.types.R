@@ -19,7 +19,6 @@ suppressMessages(library(data.table))
 
 suppressMessages(library(EnsDb.Hsapiens.v100))
 suppressMessages(library(GenomicRanges))
-library(TFBSTools)
 suppressMessages(library(future))
 suppressMessages(library(optparse))
 suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
@@ -30,6 +29,11 @@ suppressMessages(library(doParallel))
 suppressMessages(library(harmony))
 suppressMessages(library(googlesheets4))
 gs4_deauth()
+
+library(JASPAR2020)
+library(TFBSTools)
+library(patchwork)
+library(chromVAR)
 
 ################################
 
