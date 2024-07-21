@@ -327,6 +327,7 @@ if (!file.exists(paste0(add_filename,"_",make.names(ct), ".rds"))) {
   saveRDS(int.sub,  paste0(add_filename,"_",make.names(ct), ".rds"))
   
 } else {
+  int.sub <- readRDS( paste0(add_filename,"_",make.names(ct), ".rds"))
   ct <- make.names(ct)
   
   DimPlot(int.sub, reduction='wnn.umap', group.by = 'Patient_ID')
