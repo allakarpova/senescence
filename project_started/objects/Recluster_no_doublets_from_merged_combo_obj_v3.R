@@ -161,7 +161,7 @@ Annotation(panc.my) <- annotations
 
 panc.my@meta.data[[cell_column]][is.na(panc.my@meta.data[[cell_column]])] <- 'Doublet' #this way it can handle previous annotation table where doublets are already removed
 
-dim(int.sub)
+dim(panc.my)
 cat('subset')
 int.sub <- subset(x = panc.my, cells = rownames(dplyr::filter(panc.my@meta.data, !grepl('Doubl', .data[[cell_column]]))))
 dim(int.sub)
