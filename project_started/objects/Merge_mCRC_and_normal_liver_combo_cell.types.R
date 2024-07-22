@@ -250,7 +250,7 @@ if (!file.exists(paste0(add_filename,"_",make.names(ct), ".rds"))) {
   obj1 <- readRDS(l.path)
   obj2 <- readRDS(m.path)
   
-  obj1.peaks <- fread('/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_liver_combo_9/peaks/34_recentered_final.liver_combo.tsv', header = TRUE)
+  obj1.peaks <- fread('/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_liver_combo_10/peaks/34_recentered_final.liver_combo.tsv', header = TRUE)
   obj2.peaks <- fread('/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_mCRC_combo_2/peaks/26_recentered_final.liver_combo.tsv', header = TRUE)
   
   obj1@meta.data$Cohort <- 'Normal liver'
