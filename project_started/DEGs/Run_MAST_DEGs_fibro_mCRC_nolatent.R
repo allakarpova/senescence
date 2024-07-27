@@ -109,4 +109,13 @@ deg4 <- FindMarkers(panc, assay = "RNA", subset.ident = "Quiescent HSCs",
          celltype = "Quiescent HSCs",
          ident.1 = 'mCRC liver',
          ident.2 = 'Normal liver')
-fwrite(rbind(deg1, deg2, deg3, deg4), paste0('DEG_findMarkers_mCRC_vs_normal_liver_all_liver_fibro_RNA_MAST_no.latent.vars.txt'), sep = '\t', row.names = F)
+
+deg5 <- FindMarkers(panc, assay = "RNA", subset.ident = "Portal fibroblasts",
+                    group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
+                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
+                    test.use = 'MAST', only.pos = F) %>%
+  mutate(gene=rownames(.),
+         celltype = "Portal fibroblasts",
+         ident.1 = 'mCRC liver',
+         ident.2 = 'Normal liver')
+fwrite(rbind(deg1, deg2, deg3, deg4, deg5), paste0('DEG_findMarkers_mCRC_vs_normal_liver_all_liver_fibro_RNA_MAST_no.latent.vars.txt'), sep = '\t', row.names = F)
