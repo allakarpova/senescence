@@ -30,4 +30,4 @@ Idents(xenium.obj) <- 'niche'
 
 deg <- FindAllMarkers(xenium.obj, logfc.threshold = 0.1, min.pct = 0.001, only.pos = F)
 
-frwite(deg, 'Niche_DEGs_Banksy_res0.5_SN039H1_5K.pdf', sep='\t')
+fwrite(deg, 'Niche_DEGs_Banksy_res0.5_SN039H1_5K.pdf', sep='\t')
