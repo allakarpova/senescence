@@ -6,15 +6,13 @@ suppressMessages(library(data.table))
 library(cowplot)
 
 
-setwd('/diskmnt/Projects/SenNet_analysis/Main.analysis/old_vs_young/xenium_validation/cell_typing/label_transfer/anno_06182024')
-
 merged.xen <- readRDS('/diskmnt/Projects/SenNet_analysis/Main.analysis/merged/merge_liver_Xenium_all_2/25_Merged_normalized_liver_Xenium_all.rds')
 
 niche.labels <- fread('/diskmnt/Projects/SenNet_analysis/Main.analysis/kgallant/xenium_analysis/banksy_072024/banksy_20_harmonized_annot_louvain.tsv', header = FALSE, col.names = c('unknown', 'cell_id', 'niche')) %>%
   select(-unknown) %>%
   mutate(niche = paste('Niche', niche)) 
 
-niche.labels
+head(niche.labels)
 
 merged.xen <- AddMetaData(merged.xen, column_to_rownames(niche.labels, 'cell_id'))
 
