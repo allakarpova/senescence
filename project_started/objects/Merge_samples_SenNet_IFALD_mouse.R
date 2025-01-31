@@ -27,96 +27,21 @@ suppressMessages(library(doParallel))
 
 
 ############## FUNCTIONS #####################
-iterative_removal <- function(all_peaks.f) {
-  #print(cancer.type)
-  #all_peaks.f <- all_peaks.f[order(score.norm, decreasing = T), ]
-  #just load existing peaks if any
-  if (file.exists(paste0('peaks/',length(samples.id),'_recentered_final.',add_filename,'.tsv'))) {
-    recentered_final.f <- fread(paste0('peaks/',length(samples.id),'_recentered_final.',add_filename,'.tsv'))
-  } else {
-    
-    recentered_p=StringToGRanges(regions = all_peaks.f$new_peak, sep = c("-", "-"))
-    
-    cat(paste0('finding overlapping peaks \n'))
-    overlapping=as.data.table(x = findOverlaps(query = recentered_p, 
-                                               subject = recentered_p)) # find which peaks overlap
-    overlapping=overlapping[queryHits!=subjectHits,]
-    overlapping.peak.number <- unique(x = overlapping$queryHits) #these are numbers of overlapping peaks that denote their position in all_peaks.f table
-    recentered_non_overlapping=all_peaks.f[-overlapping.peak.number,] # select peaks that are not overlapping as non-overlapping peaks
-    fwrite(recentered_non_overlapping,paste0('peaks/',length(samples.id),'_recentered_nonOverlapping.',add_filename,'.tsv'),
-           sep='\t',row.names=FALSE)
-    if (length(overlapping.peak.number)>0) {
-      tmp <- data.table(chr = all_peaks.f$seqnames[overlapping.peak.number], 
-                        num = overlapping.peak.number)
-      overlapping.peak.number.split <- split(tmp, by = 'chr', keep.by = T) #split peaks by chromosome 
-      registerDoParallel(cores=25)
-      #this is where iterative removal of peaks is done
-      best_in_overlapping_num <- foreach(peak.numbers=overlapping.peak.number.split) %dopar% {
-        cat('removing overlapping peaks in each chromosome\n')
-        iterative_removal_core (peak.numbers = peak.numbers, overlapping.f = overlapping)
-      }
-      stopImplicitCluster()
-      best_in_overlapping_num <- do.call('c', best_in_overlapping_num) #combine best peak numbers from all chromosomes
-      best_in_overlapping_cancer <- all_peaks.f[best_in_overlapping_num,] #extract peaks themselves
-      fwrite(best_in_overlapping_cancer,paste0('peaks/',length(samples.id),'_recentered_Overlapping.',add_filename,'.tsv'),
-             sep='\t',row.names=FALSE)
-      recentered_final.f=rbindlist(list(recentered_non_overlapping,best_in_overlapping_cancer))
-    } else {
-      recentered_final.f=recentered_non_overlapping
-    }
-    final.overlaps <-  recentered_final.f$new_peak %>% 
-      unique %>% 
-      StringToGRanges %>% 
-      countOverlaps
-    if (sum(final.overlaps>1)>0) {
-      stop("Execution stopped. Overlapping peaks remained")
-    }
-    
-  }
-  return(recentered_final.f)
-}
-
-
-# this works like a charm
-iterative_removal_core <- function(peak.numbers, overlapping.f) {
-  chr = peak.numbers$chr[1]
-  running.vector <- peak.numbers$num
-  peaks.to.trash <- NULL
-  peaks.to.keep <- NULL
-  while (length(running.vector) != 0) {
-    n <- running.vector[1] # this is the first and the best peak since peaks are sorted by scores
-    neighbor.peaks.num.discard <- overlapping.f[queryHits==n, subjectHits] #find positions of other peaks overlapping with the first one 
-    running.vector <- setdiff(running.vector, neighbor.peaks.num.discard) # remove them from the list of peaks
-    running.vector <- setdiff(running.vector, n)
-    peaks.to.keep <- c(peaks.to.keep, n) # add this peak to the keeping list
-    peaks.to.trash <- unique(c(peaks.to.trash, neighbor.peaks.num.discard)) # add neighbors to the list of peaks to discard
-  }
-  cat('done\n')
-  return(peaks.to.keep)
-}
-
-load_peaks <- function(sample, input.path.f){
-  peaks=fread(paste0(input.path.f,'/', sample,"/recentered_final.filtered",sample,".tsv"))
-  peaks$Sample=sample
+runHarmonyNormalization <- function(obj, dims=30, column = 'Mouse_ID') {
   
-  peaks$new_peak = paste(peaks$seqnames, peaks$recentered_start, peaks$recentered_end, sep = '-') #make sure all peaks are written with -
-  total.score.per.mil <- sum(peaks$neg_log10qvalue_summit)/1000000 # this is scaling factor for MACS2 score
-  peaks$score.norm <- peaks$neg_log10qvalue_summit / total.score.per.mil # normalize peak score in each sample aka score per million
-  return(peaks)
+  obj <- obj %>%
+    RunHarmony(column, reduction = 'pca', assay.use = 'SCT') %>%
+    FindNeighbors(reduction = "harmony", dims = 1:dims) %>%
+    FindClusters(verbose = FALSE, resolution = 1, algorithm = 4,
+                 method='igraph') %>%
+    RunUMAP(reduction = "harmony",reduction.name = 'umap.harmony', reduction.key = 'harmonyUMAP_',  dims = 1:dims)
+  
+  #obj <- NormalizeData(obj, assay = 'RNA')
+  
+  return(obj)
+  
 }
 
-getFeatureMatrix <- function (obj, peaks, pro_n, assay.towork.f) {
-  frag <- Fragments(obj[[assay.towork.f]])
-  cat('Making a large count matrix...\n')
-  matrix.counts <- FeatureMatrix(
-    fragments = frag,
-    features = peaks,
-    process_n = pro_n,
-    sep = c("-","-"),
-    cells = colnames(obj)
-  )
-  return(matrix.counts)
-}
 
 
 option_list = list(
@@ -294,6 +219,17 @@ if (!file.exists(paste0(length(samples.id),"_Mouse_Merged_not_normalized_",add_f
    
   DimPlot(combined, reduction = "umap.rna", group.by = "Timepoint.weeks", label = TRUE, label.size = 2.5, repel = TRUE)
   ggsave(paste0(length(samples.id),"_Mouse_Merged_Timepoint.weeks_", add_filename, ".pdf"),height=10,width=12)
+  
+  
+  combined <- combined %>% runHarmonyNormalization()
+  
+  saveRDS(combined,  paste0(length(samples.id),"_Mouse_Merged_normalized_",add_filename,".rds"))
+  
+  DimPlot(combined, reduction = "umap.harmony", group.by = "Sample_ID", label = TRUE, label.size = 2.5, repel = TRUE)
+  ggsave(paste0(length(samples.id),"_Mouse_Merged_harmony_Sample_ID_", add_filename, ".pdf"),height=10,width=12)
+  
+  DimPlot(combined, reduction = "umap.harmony", group.by = "Timepoint.weeks", label = TRUE, label.size = 2.5, repel = TRUE)
+  ggsave(paste0(length(samples.id),"_Mouse_Merged_harmony_Timepoint.weeks_", add_filename, ".pdf"),height=10,width=12)
   
   
   fwrite(cbind(Embeddings(combined, reduction = "umap.rna"),
