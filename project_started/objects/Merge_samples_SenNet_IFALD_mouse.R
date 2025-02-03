@@ -24,7 +24,7 @@ suppressMessages(library(optparse))
 suppressMessages(library(googlesheets4))
 suppressMessages(library(stringr))
 suppressMessages(library(doParallel))
-
+library(harmony)
 
 ############## FUNCTIONS #####################
 runHarmonyNormalization <- function(obj, dims=30, column = 'Mouse_ID') {
@@ -205,7 +205,7 @@ if (!file.exists(paste0(length(samples.id),"_Mouse_Merged_not_normalized_",add_f
     RunPCA(assay = 'SCT', do.print = FALSE, verbose = T) %>%
     RunUMAP(dims = 1:30,reduction.name = 'umap.rna', reduction.key = 'rnaUMAP_', verbose = T) %>%
     FindNeighbors( dims = 1:30) %>%
-    FindClusters(resolution = 2, verbose = FALSE)
+    FindClusters(resolution = 1, verbose = FALSE)
   
   cat('saving the object...\n')
   saveRDS(combined,  paste0(length(samples.id),"_Mouse_Merged_normalized_",add_filename,".rds"))
