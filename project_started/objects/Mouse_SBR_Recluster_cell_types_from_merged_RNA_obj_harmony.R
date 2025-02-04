@@ -116,7 +116,7 @@ panc.my <- readRDS(input.path)
 panc.my <- AddMetaData(panc.my, my.metadata)
 
 DefaultAssay(panc.my) <- 'RNA'
-panc.my <- DietSeurat(panc.my, assays = c('RNA', assay.towork))
+panc.my <- DietSeurat(panc.my, assays = c('RNA'))
 
 
 cell.types.oi <- c( 'Hepatocytes', 'Cholangiocytes', 'Hepatic stellate cells', 
@@ -127,9 +127,6 @@ cell.types.touse <- intersect(cell.types.oi, cell.types.in.object)
 print(cell.types.touse)
 
 print(dim(panc.my))
-
-DefaultAssay(panc.my)=assay.towork
-Annotation(panc.my) <- annotations
 
 
 cell.types.oi %>% walk (function(ct) {
