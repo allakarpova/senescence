@@ -155,12 +155,8 @@ cell.types.oi %>% walk (function(ct) {
           return.only.var.genes = TRUE, verbose = F) %>%
         RunPCA(assay = 'SCT', do.print = FALSE, verbose = F) %>%
         RunUMAP(dims = 1:50,reduction.name = 'umap.rna', reduction.key = 'rnaUMAP_', verbose = F) 
-      
-      
-      DimPlot(int.sub, group.by = 'seurat_clusters', reduction='umap.rna', label = TRUE)
-      ggsave(glue::glue("Dimplot_seurat_clusters_{ct}.harmony.pdf"),
-             height=5,width=8,useDingbats=FALSE,limitsize = FALSE)
-      
+    
+      int.sub@meta.data$Mouse_ID <- as.character(int.sub@meta.data$Mouse_ID)
       int.sub <- runHarmonyNormalization(int.sub)
       
       cat('saving the object...\n')
