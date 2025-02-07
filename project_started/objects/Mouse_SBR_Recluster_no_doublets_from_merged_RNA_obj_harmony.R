@@ -130,6 +130,7 @@ panc.my <- AddMetaData(panc.my, my.metadata)
 panc.my <- subset(x = panc.my, cells = rownames(dplyr::filter(panc.my@meta.data, !grepl('Doubl', .data[[cell_column]]))))
 
 panc.my <- NormalizeRNA(panc.my)
+panc.my@meta.data$Mouse_ID <- as.character(panc.my@meta.data$Mouse_ID)
 panc.my <- runHarmonyNormalization(panc.my)
 
 saveRDS(panc.my,  paste0(add_filename,".rds"))
