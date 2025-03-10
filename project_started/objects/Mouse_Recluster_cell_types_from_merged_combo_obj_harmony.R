@@ -173,8 +173,8 @@ genome(annotations) <- "NA"
 seqlevelsStyle(annotations) <- 'UCSC' # instead of USCS because it keeps return error https://github.com/stuart-lab/signac/issues/826
 genome(annotations) <- "mm10"
 
-cell.types.oi <- c(  'Hepatic stellate cells', 'Cholangiocytes', 
-                     'LSECs','Kupffer cells',  'Hepatocytes')
+cell.types.oi <- c(  'Hepatic stellate cells', 
+                     'LSECs','Kupffer cells', 'Cholangiocytes',  'Hepatocytes')
 
 cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
 cell.types.touse <- intersect(cell.types.oi, cell.types.in.object)
