@@ -1,14 +1,10 @@
 # Remove doublets in mouse samples and run harmony on c('Mouse_ID', 'Cohort')
 ###libraries
 ##################
-library(future)
-
 #plan("multicore", workers = 20)
 #options(future.globals.maxSize = 100 * 1024 ^ 3)
 
-suppressMessages(library(Signac))
 suppressMessages(library(Seurat))
-suppressMessages(library(GenomeInfoDb))
 suppressMessages(library(ggplot2))
 suppressMessages(library(RColorBrewer))
 suppressMessages(library(tidyverse))
@@ -17,15 +13,10 @@ set.seed(1234)
 suppressMessages(library(dplyr))
 suppressMessages(library(data.table))
 
-suppressMessages(library(EnsDb.Hsapiens.v86))
-suppressMessages(library(GenomicRanges))
 suppressMessages(library(future))
 suppressMessages(library(optparse))
-suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
-
 suppressMessages(library(googlesheets4))
 suppressMessages(library(stringr))
-suppressMessages(library(doParallel))
 suppressMessages(library(harmony))
 
 
