@@ -109,10 +109,8 @@ cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
 
 
 cell.types.oi %>% walk (function(ct) {
-  
-  if(!file.exists(paste0(add_filename,"_",make.names(ct), ".rds"))) {
+
     print(ct)
-    
     DefaultAssay(int.sub) <- 'Xenium'
     int.sub <- DietSeurat(int.sub, assays = 'Xenium')
     int.sub <- subset(x = panc.my, 
