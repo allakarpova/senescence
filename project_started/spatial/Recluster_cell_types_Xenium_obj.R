@@ -97,12 +97,12 @@ cell.types.oi <- c( 'Hepatocytes', 'Cholangiocytes', 'HSCs|fibro',  'LSECs')
 
 cell.types.in.object <- unique(as.character(unlist(panc.my[[cell_column]])))
 
+DefaultAssay(panc.my) <- 'Xenium'
+panc.my <- DietSeurat(panc.my, assays = 'Xenium')
 
 cell.types.oi %>% walk (function(ct) {
 
     print(ct)
-    DefaultAssay(int.sub) <- 'Xenium'
-    int.sub <- DietSeurat(int.sub, assays = 'Xenium')
     int.sub <- subset(x = panc.my, 
                       cells = rownames(dplyr::filter(panc.my@meta.data, 
                                                      grepl(ct, .data[[cell_column]])
