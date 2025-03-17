@@ -2,7 +2,6 @@
 ###libraries
 ##################
 #plan("multicore", workers = 20)
-#options(future.globals.maxSize = 100 * 1024 ^ 3)
 
 suppressMessages(library(Seurat))
 suppressMessages(library(ggplot2))
@@ -14,6 +13,8 @@ suppressMessages(library(dplyr))
 suppressMessages(library(data.table))
 
 suppressMessages(library(future))
+options(future.globals.maxSize = 100 * 1024 ^ 3)
+
 suppressMessages(library(optparse))
 suppressMessages(library(googlesheets4))
 suppressMessages(library(stringr))
