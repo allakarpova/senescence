@@ -66,7 +66,7 @@ opt_parser = OptionParser(option_list=option_list);
 opt = parse_args(opt_parser)
 ###################################
 
-normalizeXenium <- function(xenium.sub) {
+normalizeXenium <- function(xenium.sub, num_pcs = 30) {
   xenium.sub <- SCTransform(xenium.sub, assay = "Xenium", return.only.var.genes = F, vst.flavor="v2")
   xenium.sub <- RunPCA(xenium.sub, npcs = num_pcs, features = rownames(xenium.sub))
   xenium.sub <- RunUMAP(xenium.sub, dims = 1:num_pcs, reduction.name = paste("umap.",num_pcs,"PC", sep = ""), reduction.key = paste("UMAP",num_pcs,"PC_",sep=""))
