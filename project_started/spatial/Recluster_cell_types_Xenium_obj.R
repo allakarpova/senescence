@@ -19,6 +19,7 @@ suppressMessages(library(optparse))
 suppressMessages(library(googlesheets4))
 suppressMessages(library(stringr))
 suppressMessages(library(harmony))
+options(Seurat.object.assay.version = "v3")
 
 
 ################################
