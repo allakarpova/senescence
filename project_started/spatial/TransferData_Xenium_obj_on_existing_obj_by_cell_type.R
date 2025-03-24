@@ -87,15 +87,27 @@ pwalk(list(sample.table$V1, sample.table$V2, sample.table$V3), function(sample, 
     dims = 1:30
   )
   
-  query.obj <- TransferData(
-    anchorset = anchors,
-    query = query.obj,
-    reference = ref.obj,
-    refdata = list(
-      celltype.l0 = 'cell_type_broad',
-      celltype.l1 = cell_column)
-    
-  )
+  if (ncol(query.obj) < 40) {
+    query.obj <- TransferData(
+      k.weight = 20,
+      anchorset = anchors,
+      query = query.obj,
+      reference = ref.obj,
+      refdata = list(
+        celltype.l0 = 'cell_type_broad',
+        celltype.l1 = cell_column)
+      )
+      
+  } else {
+      query.obj <- TransferData(
+        anchorset = anchors,
+        query = query.obj,
+        reference = ref.obj,
+        refdata = list(
+          celltype.l0 = 'cell_type_broad',
+          celltype.l1 = cell_column)
+      )
+  }
   
   
   DimPlot(query.obj, group.by = "predicted.celltype.l1", label = TRUE, label.size = 3, repel = TRUE) + NoLegend()
