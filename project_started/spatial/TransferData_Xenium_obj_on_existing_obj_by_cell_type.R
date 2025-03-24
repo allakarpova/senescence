@@ -87,7 +87,7 @@ pwalk(list(sample.table$V1, sample.table$V2, sample.table$V3), function(sample, 
     dims = 1:30
   )
   
-  if (ncol(query.obj) < 40) {
+  if (ncol(query.obj) < 6000) {
     query.obj <- TransferData(
       k.weight = 20,
       anchorset = anchors,
