@@ -104,8 +104,10 @@ samples <- read_sheet("https://docs.google.com/spreadsheets/d/1VeWme__vvVHAhHaQB
                       sheet = "Patient single cells data", trim_ws = T)
 
 samples <- samples %>% dplyr::filter(`Include in downstream` == 'Yes')
+print(samples)
 samples <- samples %>% dplyr::filter(`Data type` %in% dt.tofilter)
 samples <- samples %>% dplyr::filter(Tissue == tis.tofilter)
+print(samples)
 samples <- samples %>% dplyr::filter(Species == species)
 #if(!is.null(ver)) {
 #  samples <- samples %>% dplyr::filter(`Xenium panel version` == ver)
