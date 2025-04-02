@@ -184,10 +184,10 @@ if (!file.exists(paste0(length(samples.id),"_Merged_not_normalized_",add_filenam
       verbose = T) %>%
     RunPCA(assay = 'SCT', do.print = FALSE, verbose = T) %>%
     RunUMAP(dims = 1:30, verbose = T) %>%
-    RunHarmony('Patient_ID', reduction = 'pca', assay.use = 'SCT') %>%
-    FindNeighbors(reduction = "harmony", dims = 1:30) #%>%
+    RunHarmony('Sample', reduction = 'pca', assay.use = 'SCT') %>%
+    FindNeighbors(reduction = "harmony", dims = 1:30) %>%
     #FindClusters(resolution = 0.5, verbose = FALSE) %>%
-    #RunUMAP(reduction = "harmony",reduction.name = 'umap.harmony', reduction.key = 'harmonyUMAP_',  dims = 1:30)
+    RunUMAP(reduction = "harmony",reduction.name = 'umap.harmony', reduction.key = 'harmonyUMAP_',  dims = 1:30)
   
   
   cat('saving the object...\n')
