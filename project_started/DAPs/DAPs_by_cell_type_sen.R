@@ -108,7 +108,7 @@ da_peaks <- FindAllMarkers(
 
 fwrite(da_peaks, paste0('DAP_findAllMarkers_by_cell_type_sen_logFC.0.25_',add_filename,'.txt'), sep = '\t', row.names = F)
 
-da_peaks <- merge(da_peaks, annot.500kb.ensdb[,c('SYMBOL', 'peak.position' ,'GENENAME', 'new_peak')], by.x = 0, by.y = 'new_peak', all.x = T)
+da_peaks <- merge(da_peaks, annot.500kb.ensdb[,c('SYMBOL', 'peak.position' ,'GENENAME', 'new_peak')], by.x = 'gene', by.y = 'new_peak', all.x = T)
 fwrite(da_peaks, paste0('DAP_findAllMarkers_by_cell_type_sen_logFC.0.25_',add_filename,'_annotated.txt'), sep = '\t', row.names = F)
 
 
