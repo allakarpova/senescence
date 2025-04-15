@@ -72,7 +72,7 @@ cat('opening object \n')
 panc <- readRDS(input.path)
 
 if(!is.null(meta.path)) {
-  atac.meta <- fread(meta.path) %>% data.frame(row.names = 1) %>%
+  atac.meta <- fread(meta.path, header = TRUE) %>% data.frame(row.names = 1) %>%
     dplyr::select(cell_type_sen)
   panc <- AddMetaData(panc, atac.meta)
   
