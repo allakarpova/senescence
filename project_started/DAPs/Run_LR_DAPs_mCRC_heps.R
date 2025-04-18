@@ -76,7 +76,7 @@ unique(Idents(panc))
 
 
 dap1 <- FindMarkers(panc, ident.1 = 'PS Hepatocytes CDKN1A SERPINE1',
-                    ident.2 = c('Hepatocytes Zone 1', "Hepatocytes Zone 2/3"),
+                    ident.2 = c('Hepatocytes'),
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'LR', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
@@ -84,7 +84,7 @@ dap1 <- FindMarkers(panc, ident.1 = 'PS Hepatocytes CDKN1A SERPINE1',
          ident.2 = 'Hepatocytes')
 
 dap2 <- FindMarkers(panc, ident.1 = 'PS Hepatocytes CDKN1A',
-                    ident.2 = c('Hepatocytes Zone 1', "Hepatocytes Zone 2/3"),
+                    ident.2 = c('Hepatocytes'),
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'LR', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
@@ -92,7 +92,7 @@ dap2 <- FindMarkers(panc, ident.1 = 'PS Hepatocytes CDKN1A',
          ident.2 = 'Hepatocytes')
 
 dap3 <- FindMarkers(panc,  ident.1 = 'Hepatocytes CRP',
-                    ident.2 = c('Hepatocytes Zone 1', "Hepatocytes Zone 2/3"),
+                    ident.2 = c('Hepatocytes'),
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
                     test.use = 'LR', latent.vars = 'Patient_ID', only.pos = F) %>%
   mutate(gene=rownames(.),
@@ -101,16 +101,5 @@ dap3 <- FindMarkers(panc,  ident.1 = 'Hepatocytes CRP',
 
 fwrite(rbind(dap1, dap2, dap3), paste0('DAP_findMarkers_PS_Heps_ATAC_merged_LR.txt'), sep = '\t', row.names = F)
 
-
-dap1 <- FindMarkers(panc,  ident.1 = 'Hepatocytes Zone 1',
-                    ident.2 = "Hepatocytes Zone 2/3",
-                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
-                    test.use = 'LR', latent.vars = 'Patient_ID', only.pos = F) %>%
-  mutate(gene=rownames(.),
-         ident.1 = 'Hepatocytes Zone 1',
-         ident.2 =  "Hepatocytes Zone 2/3")
-
-
-fwrite(dap1, paste0('DAP_findMarkers_Heps_zone1_vs_3_ATAC_merged_LR.txt'), sep = '\t', row.names = F)
 
 
