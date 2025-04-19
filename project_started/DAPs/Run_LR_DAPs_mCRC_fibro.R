@@ -76,7 +76,7 @@ unique(Idents(panc))
 dap1 <- FindMarkers(panc, ident.1 = 'PS fibroblasts CDKN1A CCL2',
                     ident.2 = c('Portal fibroblasts'),
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
-                    test.use = 'LR', latent.vars = 'Patient_ID', only.pos = F) %>%
+                    test.use = 'LR',only.pos = F) %>%
   mutate(gene=rownames(.),
          ident.1 = 'PS fibroblasts CDKN1A CCL2',
          ident.2 = 'Portal fibroblasts')
@@ -84,19 +84,19 @@ dap1 <- FindMarkers(panc, ident.1 = 'PS fibroblasts CDKN1A CCL2',
 dap2 <- FindMarkers(panc,  ident.1 = 'PS fibroblasts CDKN1A CCL2',
                     ident.2 = c('Activated HSCs', "Activating HSCs", 'Quiescent HSCs'),
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
-                    test.use = 'LR', latent.vars = 'Patient_ID', only.pos = F) %>%
+                    test.use = 'LR',  only.pos = F) %>%
   mutate(gene=rownames(.),
          ident.1 = 'PS fibroblasts CDKN1A CCL2',
          ident.2 = 'HSCs')
 
 
-fwrite(rbind(dap1, dap2), paste0('DAP_findMarkers_PS_fibro_ATAC_merged_LR.txt'), sep = '\t', row.names = F)
+fwrite(rbind(dap1, dap2), paste0('DAP_findMarkers_PS_fibro_ATAC_merged_LR_no_latent.txt'), sep = '\t', row.names = F)
 
 
 dap1 <- FindMarkers(panc, ident.1 = c('Portal fibroblasts'),
                     ident.2 = c('Activated HSCs', "Activating HSCs", 'Quiescent HSCs'),
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
-                    test.use = 'LR', latent.vars = 'Patient_ID', only.pos = F) %>%
+                    test.use = 'LR',  only.pos = F) %>%
   mutate(gene=rownames(.),
          ident.1 = 'Portal fibroblasts',
          ident.2 =  "HSCs")
@@ -104,7 +104,7 @@ dap1 <- FindMarkers(panc, ident.1 = c('Portal fibroblasts'),
 dap2 <- FindMarkers(panc,  ident.1 = c('Activated HSCs'),
                     ident.2 = c("Activating HSCs", 'Quiescent HSCs'),
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
-                    test.use = 'LR', latent.vars = 'Patient_ID', only.pos = F) %>%
+                    test.use = 'LR', only.pos = F) %>%
   mutate(gene=rownames(.),
          ident.1 = 'Activated HSCs',
          ident.2 =  "Other HSCs")
@@ -112,7 +112,7 @@ dap2 <- FindMarkers(panc,  ident.1 = c('Activated HSCs'),
 dap3 <- FindMarkers(panc,ident.1 = c('Activating HSCs'),
                     ident.2 = c( 'Quiescent HSCs'),
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
-                    test.use = 'LR', latent.vars = 'Patient_ID', only.pos = F) %>%
+                    test.use = 'LR', only.pos = F) %>%
   mutate(gene=rownames(.),
          ident.1 = 'Activating HSCs',
          ident.2 =  "Quiescent HSCs")
@@ -120,12 +120,12 @@ dap3 <- FindMarkers(panc,ident.1 = c('Activating HSCs'),
 dap4 <- FindMarkers(panc,  ident.1 = c( 'Quiescent HSCs'),
                     ident.2 = c( 'Activated HSCs', "Activating HSCs"),
                     logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.02,
-                    test.use = 'LR', latent.vars = 'Patient_ID', only.pos = F) %>%
+                    test.use = 'LR',  only.pos = F) %>%
   mutate(gene=rownames(.),
          ident.1 = 'Quiescent HSCs',
          ident.2 =  "Other HSCs")
 
 
-fwrite(rbind(dap1, dap2,dap3, dap4), paste0('DAP_findMarkers_normal_fibro_HSC_ATAC_merged_LR.txt'), sep = '\t', row.names = F)
+fwrite(rbind(dap1, dap2,dap3, dap4), paste0('DAP_findMarkers_normal_fibro_HSC_ATAC_merged_LR_no_latent.txt'), sep = '\t', row.names = F)
 
 
