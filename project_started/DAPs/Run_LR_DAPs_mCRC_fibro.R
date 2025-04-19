@@ -55,9 +55,9 @@ setwd(out_path)
 cat('opening object \n')
 panc <- readRDS(input.path)
 
-library(future)
-plan("multicore", workers = 4)
-options(future.globals.maxSize = 100 * 1024 ^ 3)
+# library(future)
+# plan("multicore", workers = 4)
+# options(future.globals.maxSize = 100 * 1024 ^ 3)
 
 if(!is.null(meta.path)) {
   meta <- fread(meta.path, header = TRUE) %>% 
