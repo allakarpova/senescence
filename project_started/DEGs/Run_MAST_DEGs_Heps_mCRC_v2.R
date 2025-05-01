@@ -137,12 +137,5 @@ deg3 <- FindMarkers(panc, assay = "RNA", subset.ident = 'Hepatocytes CRP',
          ident.1 = 'mCRC liver',
          ident.2 = 'Normal liver')
 
-deg4 <- FindMarkers(panc, assay = "RNA", subset.ident = "PS Hepatocytes CDKN2A/2B",
-                    group.by = 'Cohort',  ident.1 = 'mCRC liver', ident.2 = 'Normal liver', 
-                    logfc.threshold = 0.1, min.pct = 0, min.diff.pct = 0.0,
-                    test.use = 'MAST', latent.vars = 'Patient_ID', only.pos = F) %>%
-  mutate(gene=rownames(.),
-         celltype = "PS Hepatocytes CDKN2A/2B",
-         ident.1 = 'mCRC liver',
-         ident.2 = 'Normal liver')
-fwrite(rbind(deg1, deg2, deg3, deg4), paste0('DEG_findMarkers_mCRC_vs_normal_liver_PS_Heps_RNA_MAST.txt'), sep = '\t', row.names = F)
+
+fwrite(rbind(deg1, deg2, deg3), paste0('DEG_findMarkers_mCRC_vs_normal_liver_PS_Heps_RNA_MAST.txt'), sep = '\t', row.names = F)
