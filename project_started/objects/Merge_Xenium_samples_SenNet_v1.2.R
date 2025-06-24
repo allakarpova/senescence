@@ -102,9 +102,9 @@ samples <- samples %>% dplyr::filter(`Data type` %in% dt.tofilter)
 samples <- samples %>% dplyr::filter(Tissue == tis.tofilter)
 print(samples)
 samples <- samples %>% dplyr::filter(Species == species)
-#if(!is.null(ver)) {
-#  samples <- samples %>% dplyr::filter(`Xenium panel version` == ver)
-#}
+if(!is.null(ver)) {
+ samples <- samples %>% dplyr::filter(`Xenium panel version` == ver)
+}
 
 samples <- samples %>% dplyr::select(`Patient ID`,`Sample name`, `Data type`, Age, Tissue, `Rds objects`, `Xenium panel version`)
 
