@@ -2,24 +2,17 @@
 ### merge Xenium objects from sennet project
 # v1.2 05.23.2024  - added ability to merge all panels together
 
-suppressMessages(library(Signac))
+
 suppressMessages(library(Seurat))
-suppressMessages(library(GenomeInfoDb))
 suppressMessages(library(ggplot2))
 suppressMessages(library(RColorBrewer))
-
 suppressMessages(library(tidyverse))
 set.seed(1234)
 
-suppressMessages(library(dplyr))
 suppressMessages(library(data.table))
 
-suppressMessages(library(EnsDb.Hsapiens.v86))
-suppressMessages(library(GenomicRanges))
 suppressMessages(library(future))
 suppressMessages(library(optparse))
-suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
-
 suppressMessages(library(googlesheets4))
 suppressMessages(library(stringr))
 suppressMessages(library(harmony))
