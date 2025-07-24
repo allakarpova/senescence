@@ -425,7 +425,7 @@ print("Saving the raw object")
 saveRDS(xenium.obj, paste(out_path,sampleID,"_raw.rds",sep=''))
 
 # check if there is a whitelist of barcodes that was provided and if so remove them.
-source("/storage1/fs1/dinglab/Active/Projects/austins2/tools/katmai_tools_backup/20240702/subset_obj_seurat.R")
+source("/diskmnt/Projects/SenNet_analysis/Main.analysis/scripts/project_started/spatial/subset_obj_seurat.R")
 # modified function originally from GATK to check if there are header lines in the cell barcode file that start with a '#'.
 # function originally checked for and removed '@': https://github.com/broadinstitute/gatk/blob/master/src/main/resources/org/broadinstitute/hellbender/tools/copynumber/plotting/CNVPlottingLibrary.R
 # changed function name to ReadCSV from ReadTSV
